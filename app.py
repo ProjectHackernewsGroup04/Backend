@@ -3,7 +3,6 @@ from flask import request, jsonify
 import pymongo
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
 
 def getConn():
     myclient = pymongo.MongoClient('localhost', 27017)
@@ -39,4 +38,5 @@ def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
 
-app.run()
+if __name__ == '__main__':
+    app.run(debug=True,host='0.0.0.0')
