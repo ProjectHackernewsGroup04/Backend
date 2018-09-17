@@ -1,4 +1,4 @@
-from flask import flask, render_template, redirect, url_for, request
+from flask import Flask
 from bson.json_util import dumps
 
 # API DOCUMENTATION : https://github.com/HackerNews/API
@@ -14,7 +14,7 @@ from database import (
 
 # Global variables
 db_connection = None
-app = flask.Flask(__name__)
+app = Flask(__name__)
 
 
 # Temporally homepage
