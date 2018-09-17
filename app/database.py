@@ -1,5 +1,7 @@
 from pymongo import MongoClient
 
+client = MongoClient('localhost', 27017)
+
 # Database names
 db_name = "hackernews"
 collection_name_items = "items"
@@ -8,15 +10,15 @@ sample_data = {"id": 1, "by": "TestUser", "type": "story"}
 
 
 def get_db_conn():
-    my_client = MongoClient('db', 27017)
-    print(my_client.list_database_names())
-    connection = my_client[db_name]
+    print(client.list_database_names())
+    connection = client[db_name]
     return connection
 
 
 def prepare_db():
     db_con = get_db_conn()
     col = db_con[collection_name_items]
+
     # Checking if the collection is empty
     if col.count() == 0:
         print("Database is empty, adding sample data")
