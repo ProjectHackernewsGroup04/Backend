@@ -49,6 +49,7 @@ jobs:
           command: |
             . venv/bin/activate
             #python manage.py test
+      - run: sudo service docker start
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker build -t hnclonecphb/backend:$CIRCLE_BRANCH .
       - run: docker push hnclonecphb/backend:$CIRCLE_BRANCH
