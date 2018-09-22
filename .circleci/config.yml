@@ -81,4 +81,4 @@ workflows:
             - build
           filters:
             branches:
-              only: circle-ci-config
+              only: master
