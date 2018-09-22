@@ -49,8 +49,19 @@ jobs:
           command: |
             . venv/bin/activate
             #python manage.py test
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker build -t hnclonecphb/backend:$CIRCLE_BRANCH .
+      - run: docker push hnclonecphb/backend:$CIRCLE_BRANCH
 
       - store_artifacts:
           path: test-reports
           destination: test-reports
-          
+  
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - run:
+        name: Deploy over SSH
+        command: |
+          ssh $SSH_USER@$SSH_HOST "echo 'Hejsa!'"
