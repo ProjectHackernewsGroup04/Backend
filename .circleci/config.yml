@@ -66,7 +66,11 @@ jobs:
       - run:
           name: Deploy over SSH
           command: |
-            ssh $SSH_USER@$SSH_HOST "echo 'Hejsa!'"
+            ssh $SSH_USER@$SSH_HOST
+            docker pull hnclonecphb/backend:$CIRCLE_BRANCH
+            docker stop backend
+            docker rm backend
+            docker run --name backend --publish=80:5000 -d hnclonecphb/backend:$CIRCLE_BRANCH
 
 workflows:
   version: 2
