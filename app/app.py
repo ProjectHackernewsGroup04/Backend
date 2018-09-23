@@ -24,6 +24,18 @@ def home():
 <p>A prototype API for distant reading of science fiction novels.</p>'''
 
 
+# Login
+@app.route('/login', methods=['GET'])
+def login():
+    return {}
+
+
+# Add story
+@app.route('/api/v1/user/<int:user_id>/addstory', methods=['GET'])
+def add_story():
+    return {}
+
+
 # Get all stories
 @app.route('/api/v1/item/all', methods=['GET'])
 def api_all():
