@@ -1,6 +1,10 @@
 from pymongo import MongoClient
 
-client = MongoClient('localhost', 27017)
+clientLocalhost = MongoClient('localhost', 27017)
+
+#Docker db name = db
+client = MongoClient('db', 27017)
+
 
 # Database names
 db_name = "hackernews"
@@ -10,7 +14,6 @@ sample_data = {"id": 1, "by": "TestUser", "type": "story"}
 
 
 def get_db_conn():
-    print(client.list_database_names())
     connection = client[db_name]
     return connection
 
