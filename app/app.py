@@ -1,10 +1,6 @@
 from flask import Flask
 from bson.json_util import dumps
 
-# API DOCUMENTATION : https://github.com/HackerNews/API
-# Python API service running on Flask framework,
-# connected to a mongodb database.
-
 # Local functions
 from database import (
     get_db_conn,
@@ -30,8 +26,14 @@ def login():
     return {}
 
 
+# Logout
+@app.route('/logout', methods=['GET'])
+def logout():
+    return {}
+
+
 # Add story
-@app.route('/api/user/<int:user_id>/addstory', methods=['GET'])
+@app.route('/submit', methods=['POST'])
 def add_story():
     return {}
 
