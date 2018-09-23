@@ -24,8 +24,20 @@ def home():
 <p>A prototype API for distant reading of science fiction novels.</p>'''
 
 
+# Login
+@app.route('/login', methods=['GET'])
+def login():
+    return {}
+
+
+# Add story
+@app.route('/api/user/<int:user_id>/addstory', methods=['GET'])
+def add_story():
+    return {}
+
+
 # Get all stories
-@app.route('/api/v1/item/all', methods=['GET'])
+@app.route('/api/item/all', methods=['GET'])
 def api_all():
     db_con = get_db_conn()
     col = db_con[collection_name_items]
@@ -34,14 +46,14 @@ def api_all():
 
 
 # Get item by id
-@app.route('/api/v1/item/<int:post_id>', methods=['GET'])
+@app.route('/api/item/<int:post_id>', methods=['GET'])
 def api_get_item_by_id(post_id):
     col = db_connection[collection_name_items]
     cursor = col.find({"id": post_id})
     return dumps(cursor)
 
 
-@app.route('/api/v1/user/<int:user_id>', methods=['GET'])
+@app.route('/api/user/<int:user_id>', methods=['GET'])
 def api_get_user_by_id(user_id):
     # show the post with the given id, the id is an integer
     return 'User %d' % user_id
