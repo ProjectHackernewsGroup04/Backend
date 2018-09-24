@@ -14,26 +14,26 @@ app = Flask(__name__)
 
 
 # Temporally homepage
-@app.route('/', methods=['GET'])
+@app.route('/api/', methods=['GET'])
 def home():
     return '''<h1>Distant Reading Archive</h1>
 <p>A prototype API for distant reading of science fiction novels.</p>'''
 
 
 # Login
-@app.route('/login', methods=['GET'])
+@app.route('/api/login', methods=['GET'])
 def login():
     return {}
 
 
 # Logout
-@app.route('/logout', methods=['GET'])
+@app.route('/api/logout', methods=['GET'])
 def logout():
     return {}
 
 
 # Add story
-@app.route('/submit', methods=['POST'])
+@app.route('/api/submit', methods=['POST'])
 def add_story():
     return {}
 
