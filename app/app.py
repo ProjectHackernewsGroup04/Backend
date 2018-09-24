@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, session, redirect
+from flask import Flask, url_for, request, session, redirect, jsonify
 from bson.json_util import dumps
 
 # Database imports
@@ -35,9 +35,10 @@ def login():
         if (password == login_user['password']):
             #session['username'] = username
             app.logger.info('Login Success')
-            return redirect(url_for('home')), 200'
+            #return redirect(url_for('home')), 200'
+            return jsonify('status':'login successed'),200
     app.logger.info('Login Failed')
-    return 'Invalid username/password', 400
+    return jsonify({'status':'failed','errorMessage':'Invalid username/password'}), 400
 
 
 # # Register
