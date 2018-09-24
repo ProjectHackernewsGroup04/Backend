@@ -30,7 +30,8 @@ def login():
     username = content['username']
     password = content['password']
     login_user = users.find_one({'username': username})
-    app.logger.info(' trying loggin', 'username',username)
+    app.logger.info('Trying loggin')
+    app.logger.info(username)
     if login_user:
         if (password == login_user['password']):
             #session['username'] = username
