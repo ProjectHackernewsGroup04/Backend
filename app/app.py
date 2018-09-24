@@ -23,18 +23,20 @@ def home():
 
 
 # Login
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
-    users = db_con.db.users
-    login_user = users.find_one({'name': request.form['username']})
-
+    users = db_con.users
+    content = request.json
+    username = content['username']
+    password = content['password']
+    login_user = users.find_one({'username': username})
+    app.logger.info(' trying loggin', 'username',username)
     if login_user:
-        if (request.form['password'].encode('utf-8'), login_user['password']
-                .encode('utf-8')) == login_user['password'].encode('utf-8'):
-            session['username'] = request.form['username']
-
-            return redirect(url_for('home')), 200
-
+        if (password == login_user['password']):
+            #session['username'] = username
+            app.logger.info('Login Success')
+            return redirect(url_for('home')), 200'
+    app.logger.info('Login Failed')
     return 'Invalid username/password', 400
 
 

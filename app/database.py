@@ -13,7 +13,8 @@ item_coll = db.items
 db_name = "hackernews"
 collection_name_items = "items"
 collection_name_users = "users"
-sample_data = {"id": 1, "by": "TestUser", "type": "story"}
+sample_item = {"id": 1, "by": "TestUser", "type": "story"}
+sample_user = {"userID": 1, "username": "TestUser", "password": "1234"}
 
 
 def get_db_conn():
@@ -29,6 +30,7 @@ def prepare_db():
     # Checking if the collection is empty
     if item_coll.count() == 0:
         print("Database is empty, adding sample data")
-        item_coll.insert_one(sample_data)
+        item_coll.insert_one(sample_item)
+        user_coll.insert_one(sample_user)
         print("Sample data added in database")
     print("Connection to DB succeeded")
