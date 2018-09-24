@@ -36,9 +36,9 @@ def login():
             #session['username'] = username
             app.logger.info('Login Success')
             #return redirect(url_for('home')), 200'
-            return jsonify('status':'login successed'),200
+            return jsonify({'status':'login successed'}),200
     app.logger.info('Login Failed')
-    return jsonify({'status':'failed','errorMessage':'Invalid username/password'}), 400
+    return jsonify({'status':'login failed','errorMessage':'Invalid username/password'}), 400
 
 
 # # Register
