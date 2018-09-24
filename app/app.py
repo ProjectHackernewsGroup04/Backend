@@ -1,29 +1,60 @@
-from flask import Flask
+from flask import Flask, url_for, request, session, redirect
 from bson.json_util import dumps
 
-# Local functions
+# Database imports
 from database import (
+    collection_name_items,
     get_db_conn,
     prepare_db,
-    collection_name_items,
 )
 
-# Global variables
-db_connection = None
 app = Flask(__name__)
 
+# Global variables
+db_con = get_db_conn()
+app.config['MONGO_DBNAME'] = 'hackernews'
 
-# Temporally homepage
-@app.route('/api/', methods=['GET'])
+
+@app.route('/')
 def home():
-    return '''<h1>Distant Reading Archive</h1>
-<p>A prototype API for distant reading of science fiction novels.</p>'''
+    if 'username' in session:
+        return 'You are logged in as ' + session['username']
+    return redirect(url_for('/'))
 
 
 # Login
-@app.route('/api/login', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    return {}
+    users = db_con.db.users
+    login_user = users.find_one({'name': request.form['username']})
+
+    if login_user:
+        if (request.form['password'].encode('utf-8'), login_user['password']
+                .encode('utf-8')) == login_user['password'].encode('utf-8'):
+            session['username'] = request.form['username']
+
+            return redirect(url_for('home')), 200
+
+    return 'Invalid username/password', 400
+
+
+# # Register
+# @app.route('/register', methods=['POST', 'GET'])
+# def register():
+#     if request.method == 'POST':
+#         users = db_con.db.users
+#         existing_user = users.find_one({'name': request.form['username']})
+#
+#         if existing_user is None:
+#             hash_psw = (request.form['password'].encode('utf-8'))
+#             users.insert(
+#                 {'name': request.form['username'], 'password': hash_psw})
+#             session['username'] = request.form['username']
+#             return redirect(url_for('/'))
+#
+#         return 'That username already exists!'
+#
+#     return redirect(url_for('/'))
 
 
 # Logout
@@ -41,7 +72,6 @@ def add_story():
 # Get all stories
 @app.route('/api/item/all', methods=['GET'])
 def api_all():
-    db_con = get_db_conn()
     col = db_con[collection_name_items]
     cursor = col.find({})
     return dumps(cursor)
@@ -50,7 +80,7 @@ def api_all():
 # Get item by id
 @app.route('/api/item/<int:post_id>', methods=['GET'])
 def api_get_item_by_id(post_id):
-    col = db_connection[collection_name_items]
+    col = db_con[collection_name_items]
     cursor = col.find({"id": post_id})
     return dumps(cursor)
 
@@ -69,4 +99,8 @@ def page_not_found(e):
 # Run the app on 0.0.0.0:5000
 if __name__ == '__main__':
     prepare_db()
+    app.config.update(
+        DEBUG=True,
+        CSRF_ENABLED=True,
+    )
     app.run(debug=True, host='0.0.0.0')

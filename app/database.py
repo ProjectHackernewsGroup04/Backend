@@ -2,10 +2,13 @@ from pymongo import MongoClient
 
 clientLocalhost = MongoClient('localhost', 27017)
 
-#Docker db name = db
+# Docker database setup
 client = MongoClient('db', 27017)
+db = client.hackernews
+user_coll = db.users
+item_coll = db.items
 
-
+# ---------------------------------------------------------------
 # Database names
 db_name = "hackernews"
 collection_name_items = "items"
@@ -20,11 +23,12 @@ def get_db_conn():
 
 def prepare_db():
     db_con = get_db_conn()
-    col = db_con[collection_name_items]
+    item_coll = db_con[collection_name_items]
+    user_coll = db_con[collection_name_users]
 
     # Checking if the collection is empty
-    if col.count() == 0:
+    if item_coll.count() == 0:
         print("Database is empty, adding sample data")
-        col.insert_one(sample_data)
+        item_coll.insert_one(sample_data)
         print("Sample data added in database")
     print("Connection to DB succeeded")
