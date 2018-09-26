@@ -33,32 +33,32 @@ def login():
     app.logger.info('Trying loggin')
     app.logger.info(username)
     if login_user:
-        if (password == login_user['password']):
-            #session['username'] = username
+        if password == login_user['password']:
             app.logger.info('Login Success')
-            #return redirect(url_for('home')), 200'
-            return jsonify({'statusCode':200, 'message': 'Login Success'}),200
+
+            return jsonify({'statusCode': 200,
+                            'message': 'Login Success'}), 200
     app.logger.info('Login Failed')
-    return jsonify({'statusCode':400,'errorMessage':'Bad Login'}), 400
+    return jsonify({'statusCode': 400, 'errorMessage': 'Bad Login'}), 400
 
 
-# # Register
-# @app.route('/register', methods=['POST', 'GET'])
-# def register():
-#     if request.method == 'POST':
-#         users = db_con.db.users
-#         existing_user = users.find_one({'name': request.form['username']})
-#
-#         if existing_user is None:
-#             hash_psw = (request.form['password'].encode('utf-8'))
-#             users.insert(
-#                 {'name': request.form['username'], 'password': hash_psw})
-#             session['username'] = request.form['username']
-#             return redirect(url_for('/'))
-#
-#         return 'That username already exists!'
-#
-#     return redirect(url_for('/'))
+# Register
+@app.route('/api/register', methods=['POST'])
+def register():
+    users = db_con.users
+    content = request.json
+    username = content['username']
+    password = content['password']
+    existing_user = users.find_one({'name': username})
+
+    if existing_user is None:
+        hash_psw = password  # adding hash later
+        users.insert(
+            {'name': username, 'password': hash_psw})
+
+        return jsonify({'statusCode': 200, 'message': 'Login Success'}), 200
+    else:
+        return jsonify('That username already exists!'), 400
 
 
 # Logout
