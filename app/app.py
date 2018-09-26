@@ -44,7 +44,7 @@ def api_login():
 
 # Register
 @app.route('/api/register', methods=['POST'])
-def apiregister():
+def api_register():
     users = db_con.users
     content = request.json
     username = content['username']
@@ -72,7 +72,7 @@ def api_add_story():
 
 
 # Edit story
-@app.route('/api/edit<id:id>', methods=["GET", "POST"])
+@app.route('/api/edit<int:id>', methods=["POST"])
 def api_edit_story():
     return {}
 
