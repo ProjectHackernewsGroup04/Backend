@@ -49,14 +49,12 @@ def register():
     content = request.json
     username = content['username']
     password = content['password']
-    existing_user = users.find_one({'name': username})
-
+    existing_user = users.find_one({'username': username})
     if existing_user is None:
         hash_psw = password  # adding hash later
         users.insert(
-            {'name': username, 'password': hash_psw})
-
-        return jsonify({'statusCode': 200, 'message': 'Login Success'}), 200
+            {'username': username, 'password': hash_psw})
+        return jsonify({'statusCode': 200, 'message': 'User created successed'}), 200
     else:
         return jsonify('That username already exists!'), 400
 
