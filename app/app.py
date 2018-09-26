@@ -16,7 +16,7 @@ app.config['MONGO_DBNAME'] = 'hackernews'
 
 
 @app.route('/')
-def home():
+def api_home():
     if 'username' in session:
         return 'You are logged in as ' + session['username']
     return redirect(url_for('/'))
@@ -24,7 +24,7 @@ def home():
 
 # Login
 @app.route('/api/login', methods=['POST'])
-def login():
+def api_login():
     users = db_con.users
     content = request.json
     username = content['username']
@@ -44,7 +44,7 @@ def login():
 
 # Register
 @app.route('/api/register', methods=['POST'])
-def register():
+def apiregister():
     users = db_con.users
     content = request.json
     username = content['username']
@@ -61,13 +61,19 @@ def register():
 
 # Logout
 @app.route('/api/logout', methods=['GET'])
-def logout():
+def api_logout():
     return {}
 
 
 # Add story
 @app.route('/api/submit', methods=['POST'])
-def add_story():
+def api_add_story():
+    return {}
+
+
+# Edit story
+@app.route('/api/edit<id:id>', methods=["GET", "POST"])
+def api_edit_story():
     return {}
 
 
