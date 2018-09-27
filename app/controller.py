@@ -11,7 +11,6 @@ def prepare():
     print("ASDASD")
 
 
-
 def check_login_success(username, password):
     users = db_con.users
     login_user = users.find_one({'username': username})
@@ -30,14 +29,14 @@ def check_login_success(username, password):
     return False
 
 
-def check_register_success(username,password):
-    print('Trying registering',username)
+def check_register_success(username, password):
+    print('Trying registering', username)
     users = db_con.users
     existing_user = users.find_one({'username': username})
-    print('Trying registering',username)
+    print('Trying registering', username)
     if existing_user is None:
-        hashed = bcrypt.hashpw(password.encode('utf8'), 
-                               bcrypt.gensalt()) ## Hashed pw
+        hashed = bcrypt.hashpw(password.encode('utf8'),
+                               bcrypt.gensalt())  ## Hashed pw
         print(hashed)
         users.insert(
             {'username': username, 'password': hashed})
@@ -46,13 +45,15 @@ def check_register_success(username,password):
         print('Register Failed')
         return False
 
-def getAllItems():
+
+def get_all_items():
     print('Trying getting all items')
     items = db_con.items
     itemList = items.find()
     return itemList
 
-def getItemsByID(id):
+
+def get_items_by_id(id):
     print('Trying getting all items by ID')
     items = db_con.items
     itemList = items.find({"_id": ObjectId(id)})
