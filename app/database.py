@@ -8,7 +8,7 @@ user_coll = db.users
 item_coll = db.items
 
 # ---------------------------------------------------------------
-#' 'Database names
+# Database names
 db_name = "hackernews"
 collection_name_items = "items"
 collection_name_users = "users"
