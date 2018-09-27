@@ -1,5 +1,6 @@
 from flask import Flask, url_for, request, session, redirect, jsonify
 from bson.json_util import dumps
+import bcrypt
 
 # Database imports
 from database import (
@@ -33,12 +34,15 @@ def api_login():
     app.logger.info('Trying loggin')
     app.logger.info(username)
     if login_user:
-        if password == login_user['password']:
+        stored_password = login_user['password']
+        ## Comparing stored password and the users hashed password
+        if bcrypt.hashpw(password.encode('utf8'), stored_password) == stored_password: 
             app.logger.info('Login Success')
-
             return jsonify({'statusCode': 200,
-                            'message': 'Login Success'}), 200
-    app.logger.info('Login Failed')
+                'message': 'Login Success'}), 200
+        else:
+            app.logger.info('Login Failed')
+            return jsonify({'statusCode': 400, 'errorMessage': 'Bad Login'}), 400
     return jsonify({'statusCode': 400, 'errorMessage': 'Bad Login'}), 400
 
 
@@ -51,12 +55,14 @@ def api_register():
     password = content['password']
     existing_user = users.find_one({'username': username})
     if existing_user is None:
-        hash_psw = password  # adding hash later
+        hashed = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt()) ## Hashed pw
+        app.logger.info(hashed)
         users.insert(
-            {'username': username, 'password': hash_psw})
+            {'username': username, 'password': hashed})
         return jsonify({'statusCode': 200, 'message': 'User created successed'}), 200
     else:
-        return jsonify('That username already exists!'), 400
+        app.logger.info('Register Failed')
+        return jsonify({'statusCode': 400, 'errorMessage': 'User already registered'}), 400
 
 
 # Logout
