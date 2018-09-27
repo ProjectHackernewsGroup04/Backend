@@ -72,26 +72,26 @@ def api_all():
     return dumps(cursor), 200
 
 
-# Get item by id
-@app.route('/api/item/<string:post_id>', methods=['GET'])
-def api_get_item_by_id(post_id):
+# Get item by object_id
+@app.route('/api/item/<string:object_id>', methods=['GET'])
+def api_get_item_by_id(item_id):
     app.logger.info('Getting all items by ID')
     cursor = controller.getItemsByID(post_id)
     return dumps(cursor), 200
 
 
-# Delete item by id
-# @app.route('/api/item/<int:post_id>', methods=['GET'])
-# def api_get_item_by_id(post_id):
-#     col = db_con[collection_name_items]
-#     cursor = col.find({"id": post_id})
-#     return dumps(cursor)
+# Delete item by object_id
+@app.route('/api/item/<string:object_id>', methods=['DELETE'])
+def api_delete_item_by_id(object_id):
+    app.logger.info('Getting all items by ID')
+    if controller.deleteItemByID(object_id):
+        return jsonify({'statusCode': 200,
+                        'message': 'Item deleted'}), 200
 
+    else:
+        return jsonify({'statusCode': 400,
+                        'errorMessage': 'Item doesnt exist, not deleted'}), 400
 
-@app.route('/api/user/<int:user_id>', methods=['GET'])
-def api_get_user_by_id(user_id):
-    # show the post with the given id, the id is an integer
-    return 'User %d' % user_id
 
 
 @app.errorhandler(404)
