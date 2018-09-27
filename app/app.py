@@ -62,20 +62,21 @@ def api_edit_story():
     return {}
 
 
-# # Get all stories
-# @app.route('/api/item/all', methods=['GET'])
-# def api_all():
-#     col = db_con[collection_name_items]
-#     cursor = col.find({})
-#     return dumps(cursor)
+# Get all stories
+@app.route('/api/item/all', methods=['GET'])
+def api_all():
+    app.logger.info('Getting all items')
+    cursor = controller.getAllItems()
+    return dumps(cursor), 200
 
 
-# # Get item by id
-# @app.route('/api/item/<int:post_id>', methods=['GET'])
-# def api_get_item_by_id(post_id):
-#     col = db_con[collection_name_items]
-#     cursor = col.find({"id": post_id})
-#     return dumps(cursor)
+# Get item by id
+@app.route('/api/item/<string:post_id>', methods=['GET'])
+def api_get_item_by_id(post_id):
+    app.logger.info('Getting all items by ID')
+    cursor = controller.getItemsByID(post_id)
+    return dumps(cursor), 200
+
 
 # Delete item by id
 # @app.route('/api/item/<int:post_id>', methods=['GET'])
