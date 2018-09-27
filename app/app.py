@@ -12,6 +12,7 @@ def api_home():
         return 'You are logged in as ' + session['username']
     return redirect(url_for('/'))
 
+
 # Login
 @app.route('/api/login', methods=['POST'])
 def api_login():
@@ -19,14 +20,13 @@ def api_login():
     username = content['username']
     password = content['password']
     app.logger.info('Trying Login')
-    if controller.checkIfloginSuccess(username,password):
+    if controller.checkIfloginSuccess(username, password):
         app.logger.info('Login Success')
         return jsonify({'statusCode': 200,
-                'message': 'Login Success'}), 200
+                        'message': 'Login Success'}), 200
     else:
         app.logger.info('Login Failed')
         return jsonify({'statusCode': 400, 'errorMessage': 'Bad Login'}), 400
-
 
 
 # Register
@@ -36,13 +36,15 @@ def api_register():
     username = content['username']
     password = content['password']
     app.logger.info('Trying Registering')
-    if controller.checkIfRegisterSuccess(username,password):
+    if controller.checkIfRegisterSuccess(username, password):
         app.logger.info('Register Success')
-        return jsonify({'statusCode': 200, 'message': 'User created successed'}), 200
+        return jsonify({'statusCode': 200,
+                        'message': 'User created successed'}), 200
     else:
         app.logger.info('Register failed')
-        return jsonify({'statusCode': 400, 'errorMessage': 'User already registered'}), 400
-        
+        return jsonify({'statusCode': 400,
+                        'errorMessage': 'User already registered'}), 400
+
 
 # Logout
 @app.route('/api/logout', methods=['GET'])
@@ -94,8 +96,6 @@ def api_get_user_by_id(user_id):
 @app.errorhandler(404)
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
-
-
 
 
 # Run the app on 0.0.0.0:5000
