@@ -1,5 +1,6 @@
 import bcrypt
 import database
+from bson.objectid import ObjectId
 
 # Global variables
 db_con = database.get_db_conn()
@@ -8,6 +9,7 @@ db_con = database.get_db_conn()
 def prepare():
     database.prepare_db()
     print("ASDASD")
+
 
 
 def check_login_success(username, password):
@@ -28,22 +30,30 @@ def check_login_success(username, password):
     return False
 
 
-def check_register_success(username, password):
-    try:
-        print("asda")
-        print('Trying registering', username)
-        users = db_con.users
-        existing_user = users.find_one({'username': username})
-        print('Trying registering', username)
-        if existing_user is None:
-            hashed = bcrypt.hashpw(password.encode('utf8'),
-                                   bcrypt.gensalt())  # Hashed pw
-            print(hashed)
-            users.insert(
-                {'username': username, 'password': hashed})
-            return True
-        else:
-            print('Register Failed')
-            return False
-    except Exception as e:
-        print(str(e))
+def check_register_success(username,password):
+    print('Trying registering',username)
+    users = db_con.users
+    existing_user = users.find_one({'username': username})
+    print('Trying registering',username)
+    if existing_user is None:
+        hashed = bcrypt.hashpw(password.encode('utf8'), 
+                               bcrypt.gensalt()) ## Hashed pw
+        print(hashed)
+        users.insert(
+            {'username': username, 'password': hashed})
+        return True
+    else:
+        print('Register Failed')
+        return False
+
+def getAllItems():
+    print('Trying getting all items')
+    items = db_con.items
+    itemList = items.find()
+    return itemList
+
+def getItemsByID(id):
+    print('Trying getting all items by ID')
+    items = db_con.items
+    itemList = items.find({"_id": ObjectId(id)})
+    return itemList
