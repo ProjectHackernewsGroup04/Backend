@@ -20,7 +20,7 @@ def api_login():
     username = content['username']
     password = content['password']
     app.logger.info('Trying Login')
-    if controller.checkIfloginSuccess(username, password):
+    if controller.check_login_success(username, password):
         app.logger.info('Login Success')
         return jsonify({'statusCode': 200,
                         'message': 'Login Success'}), 200
@@ -36,7 +36,7 @@ def api_register():
     username = content['username']
     password = content['password']
     app.logger.info('Trying Registering')
-    if controller.checkIfRegisterSuccess(username, password):
+    if controller.check_register_success(username, password):
         app.logger.info('Register Success')
         return jsonify({'statusCode': 200,
                         'message': 'User created successed'}), 200
