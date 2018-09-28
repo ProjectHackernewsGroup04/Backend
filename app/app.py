@@ -1,17 +1,8 @@
 from flask import Flask, url_for, request, session, redirect, jsonify
 from bson.json_util import dumps
-
-# Database imports
-from database import (
-    collection_name_items,
-    get_db_conn,
-    prepare_db,
-)
+import controller
 
 app = Flask(__name__)
-
-# Global variables
-db_con = get_db_conn()
 app.config['MONGO_DBNAME'] = 'hackernews'
 
 
@@ -25,38 +16,34 @@ def api_home():
 # Login
 @app.route('/api/login', methods=['POST'])
 def api_login():
-    users = db_con.users
     content = request.json
     username = content['username']
     password = content['password']
-    login_user = users.find_one({'username': username})
-    app.logger.info('Trying loggin')
-    app.logger.info(username)
-    if login_user:
-        if password == login_user['password']:
-            app.logger.info('Login Success')
-
-            return jsonify({'statusCode': 200,
-                            'message': 'Login Success'}), 200
-    app.logger.info('Login Failed')
-    return jsonify({'statusCode': 400, 'errorMessage': 'Bad Login'}), 400
+    app.logger.info('Trying Login')
+    if controller.check_login_success(username, password):
+        app.logger.info('Login Success')
+        return jsonify({'statusCode': 200,
+                        'message': 'Login Success'}), 200
+    else:
+        app.logger.info('Login Failed')
+        return jsonify({'statusCode': 400, 'errorMessage': 'Bad Login'}), 400
 
 
 # Register
 @app.route('/api/register', methods=['POST'])
 def api_register():
-    users = db_con.users
     content = request.json
     username = content['username']
     password = content['password']
-    existing_user = users.find_one({'username': username})
-    if existing_user is None:
-        hash_psw = password  # adding hash later
-        users.insert(
-            {'username': username, 'password': hash_psw})
-        return jsonify({'statusCode': 200, 'message': 'User created successed'}), 200
+    app.logger.info('Trying Registering')
+    if controller.check_register_success(username, password):
+        app.logger.info('Register Success')
+        return jsonify({'statusCode': 200,
+                        'message': 'User created successed'}), 200
     else:
-        return jsonify('That username already exists!'), 400
+        app.logger.info('Register failed')
+        return jsonify({'statusCode': 400,
+                        'errorMessage': 'User already registered'}), 400
 
 
 # Logout
@@ -80,23 +67,31 @@ def api_edit_story():
 # Get all stories
 @app.route('/api/item/all', methods=['GET'])
 def api_all():
-    col = db_con[collection_name_items]
-    cursor = col.find({})
-    return dumps(cursor)
+    app.logger.info('Getting all items')
+    cursor = controller.getAllItems()
+    return dumps(cursor), 200
 
 
-# Get item by id
-@app.route('/api/item/<int:post_id>', methods=['GET'])
-def api_get_item_by_id(post_id):
-    col = db_con[collection_name_items]
-    cursor = col.find({"id": post_id})
-    return dumps(cursor)
+# Get item by object_id
+@app.route('/api/item/<string:object_id>', methods=['GET'])
+def api_get_item_by_id(item_id):
+    app.logger.info('Getting all items by ID')
+    cursor = controller.getItemsByID(post_id)
+    return dumps(cursor), 200
 
 
-@app.route('/api/user/<int:user_id>', methods=['GET'])
-def api_get_user_by_id(user_id):
-    # show the post with the given id, the id is an integer
-    return 'User %d' % user_id
+# Delete item by object_id
+@app.route('/api/item/<string:object_id>', methods=['DELETE'])
+def api_delete_item_by_id(object_id):
+    app.logger.info('Getting all items by ID')
+    if controller.deleteItemByID(object_id):
+        return jsonify({'statusCode': 200,
+                        'message': 'Item deleted'}), 200
+
+    else:
+        return jsonify({'statusCode': 400,
+                        'errorMessage': 'Item doesnt exist, not deleted'}), 400
+
 
 
 @app.errorhandler(404)
@@ -106,9 +101,9 @@ def page_not_found(e):
 
 # Run the app on 0.0.0.0:5000
 if __name__ == '__main__':
-    prepare_db()
     app.config.update(
         DEBUG=True,
         CSRF_ENABLED=True,
     )
+    controller.prepare()
     app.run(debug=True, host='0.0.0.0')
