@@ -1,5 +1,4 @@
 [{
-  "id": 1,
   "kids": [2, 3],
   "parent": 1234,
   "title": "Story #01",

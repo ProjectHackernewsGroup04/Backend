@@ -68,15 +68,15 @@ def api_edit_story():
 @app.route('/api/item/all', methods=['GET'])
 def api_all():
     app.logger.info('Getting all items')
-    cursor = controller.getAllItems()
+    cursor = controller.get_all_items()
     return dumps(cursor), 200
 
 
 # Get item by object_id
 @app.route('/api/item/<string:object_id>', methods=['GET'])
-def api_get_item_by_id(item_id):
+def api_get_item_by_id(object_id):
     app.logger.info('Getting all items by ID')
-    cursor = controller.getItemsByID(post_id)
+    cursor = controller.get_item_by_id(object_id)
     return dumps(cursor), 200
 
 
@@ -84,7 +84,7 @@ def api_get_item_by_id(item_id):
 @app.route('/api/item/<string:object_id>', methods=['DELETE'])
 def api_delete_item_by_id(object_id):
     app.logger.info('Getting all items by ID')
-    if controller.deleteItemByID(object_id):
+    if controller.delete_item_by_id(object_id):
         return jsonify({'statusCode': 200,
                         'message': 'Item deleted'}), 200
 
