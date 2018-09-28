@@ -1,6 +1,9 @@
 from pymongo import MongoClient
 import json
 
+with open('app/stories.json') as f:
+    data = json.load(f)
+
 # Docker database setup
 client = MongoClient('db', 27017)
 db = client.hackernews
@@ -8,7 +11,7 @@ user_coll = db.users
 item_coll = db.items
 
 # ---------------------------------------------------------------
-#' 'Database names
+# Database names
 db_name = "hackernews"
 collection_name_items = "items"
 collection_name_users = "users"
@@ -33,4 +36,4 @@ def prepare_db():
         user_coll.insert_one(sample_user)
         item_coll.insert_many(data)
         print("Sample data added in database")
-    print("Connection to DB succeeded")
+print("Connection to DB succeeded")
