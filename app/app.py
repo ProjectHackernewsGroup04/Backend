@@ -77,7 +77,7 @@ def api_all():
 def api_get_item_by_id(object_id):
     app.logger.info('Getting all items by ID')
     cursor = controller.get_item_by_id(object_id)
-    return dumps(cursor), 200
+    return dumps({'statusCode': 200, 'item': cursor}), 200
 
 
 # Delete item by object_id
