@@ -2,6 +2,7 @@
 .idea/workspace.xml
 .DS_Store
 .vs/
+app/.coverage
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
