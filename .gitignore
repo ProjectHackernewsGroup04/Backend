@@ -3,7 +3,7 @@
 .DS_Store
 .vs/
 app/.coverage
-app/.pytest_cache
+app/test/.pytest_cache
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
