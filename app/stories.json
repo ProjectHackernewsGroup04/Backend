@@ -13,4 +13,103 @@
   "time": "",
   "poll": 232,
   "type": "story"
-}]
+},
+{
+  "by" : "dhouston",
+  "descendants" : 71,
+  "id": 10,
+  "kids" : [ 4, 5, 6 ],
+  "score" : 111,
+  "time" : 1175714200,
+  "title" : "My YC app: Dropbox - Throw away your USB drive",
+  "type" : "story",
+  "url" : "http://www.getdropbox.com/u/2/screencast.html"
+},
+  {
+    "by": "cph",
+    "descendants": 7,
+    "id": 20,
+    "kids": [
+      1,
+      2,
+      3
+    ],
+    "score": 1181,
+    "time": 1175714200,
+    "title": "My stuff",
+    "type": "story",
+    "url": "https://www.reddit.com/r/wholesomememes/"
+  },
+  {
+  "by" : "norvig",
+  "id" : 1,
+  "kids" : [7,8],
+  "parent" : 20,
+  "text" : "keep reading....",
+  "time" : 1314211127,
+  "type" : "comment"
+},
+    {
+  "by" : "norvig",
+  "id" : 2,
+  "kids" : [],
+  "parent" : 20,
+  "text" : "Aw shucks, Ill make a deal?",
+  "time" : 1314211127,
+  "type" : "comment"
+},
+    {
+  "by" : "norvig",
+  "id" : 3,
+  "kids" : [],
+  "parent" : 20,
+  "text" : "what"
+  "time" : 1314211127,
+  "type" : "comment"
+},
+    {
+  "by" : "norvig",
+  "id" : 4,
+  "kids" : [],
+  "parent" : 10,
+  "text" : "NO",
+  "time" : 1314211127,
+  "type" : "comment"
+},
+    {
+  "by" : "fin",
+  "id" : 5,
+  "kids" : [],
+  "parent" : 10,
+  "text" : "ments?",
+  "time" : 1314211127,
+  "type" : "comment"
+},
+    {
+  "by" : "arhus",
+  "id" : 6,
+  "kids" : [],
+  "parent" : 10,
+  "text" : "Aw shucks, guys ... you make me blush with your compliments.<p>Tell you what, Ill make a deal: I'll keep writing if you keep reading. K?",
+  "time" : 1314211127,
+  "type" : "comment"
+},
+   {
+  "by" : "yuhi",
+  "id" : 7,
+  "kids" : [],
+  "parent" : 1,
+  "text" : "you keep reading. K?",
+  "time" : 1314211127,
+  "type" : "comment"
+},
+   {
+  "by" : "mani",
+  "id" : 8,
+  "kids" : [],
+  "parent" : 1,
+  "text" : "HAHAHAHAHAHHAHAAAA?",
+  "time" : 1314211127,
+  "type" : "comment"
+}
+]
