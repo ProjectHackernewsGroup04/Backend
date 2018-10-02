@@ -72,19 +72,19 @@ def api_all():
     return dumps(cursor), 200
 
 
-# Get item by object_id
-@app.route('/api/item/<string:object_id>', methods=['GET'])
-def api_get_item_by_id(object_id):
+# Get item by id
+@app.route('/api/item/<int:id>', methods=['GET'])
+def api_get_item_by_id(id):
     app.logger.info('Getting all items by ID')
-    cursor = controller.get_item_by_id(object_id)
+    cursor = controller.get_item_by_id(id)
     return dumps({'statusCode': 200, 'item': cursor}), 200
 
 
-# Delete item by object_id
-@app.route('/api/item/<string:object_id>', methods=['DELETE'])
-def api_delete_item_by_id(object_id):
+# Delete item by id
+@app.route('/api/item/<int:id>', methods=['DELETE'])
+def api_delete_item_by_id(id):
     app.logger.info('Getting all items by ID')
-    if controller.delete_item_by_id(object_id):
+    if controller.delete_item_by_id(id):
         return jsonify({'statusCode': 200,
                         'message': 'Item deleted'}), 200
 

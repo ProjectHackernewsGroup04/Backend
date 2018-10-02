@@ -56,15 +56,15 @@ def get_all_items():
 def get_item_by_id(id):
     print('Trying getting one item by ID')
     items = db_con.items
-    itemList = items.find_one({"_id": ObjectId(id)})
+    itemList = items.find_one({"id": id})
     return itemList
 
 def delete_item_by_id(id):
     print('Trying delete item by ID')
     items = db_con.items
-    item = items.find_one({"_id": ObjectId(id)})
+    item = items.find_one({"id":id})
     if item:
-        items.update_one({"_id": ObjectId(id)},
+        items.update_one({"id": id},
             {'$set': {'deleted': True}}, upsert=False)
         return True
     else:
