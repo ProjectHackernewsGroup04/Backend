@@ -59,6 +59,7 @@ def get_item_by_id(id):
     itemList = items.find_one({"id": id})
     return itemList
 
+
 def delete_item_by_id(id):
     print('Trying delete item by ID')
     items = db_con.items
