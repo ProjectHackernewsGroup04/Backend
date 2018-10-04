@@ -1,6 +1,5 @@
 import bcrypt
 import database
-from bson.objectid import ObjectId
 
 # Global variables
 db_con = database.get_db_conn()
