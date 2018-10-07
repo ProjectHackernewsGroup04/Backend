@@ -2,3 +2,4 @@ Flask==0.12.3
 pymongo
 bcrypt
 pytest
+flask_httpauth
