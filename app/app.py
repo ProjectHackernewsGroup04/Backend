@@ -1,10 +1,15 @@
 from flask import Flask, url_for, request, session, redirect, jsonify
+from flask_httpauth import HTTPBasicAuth
 from bson.json_util import dumps
 import controller
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = 'hackernews'
+auth = HTTPBasicAuth()
 
+@auth.verify_password
+def verify_password(username, password):
+    return controller.check_login_success(username, password)
 
 @app.route('/')
 def api_home():
@@ -48,18 +53,21 @@ def api_register():
 
 # Logout
 @app.route('/api/logout', methods=['GET'])
+@auth.login_required
 def api_logout():
     return {}
 
 
 # Add story
 @app.route('/api/submit', methods=['POST'])
+@auth.login_required
 def api_add_story():
     return {}
 
 
 # Edit story
 @app.route('/api/edit<int:id>', methods=["POST"])
+@auth.login_required
 def api_edit_story():
     return {}
 
@@ -82,6 +90,7 @@ def api_get_item_by_id(id):
 
 # Delete item by id
 @app.route('/api/item/<int:id>', methods=['DELETE'])
+@auth.login_required
 def api_delete_item_by_id(id):
     app.logger.info('Getting all items by ID')
     if controller.delete_item_by_id(id):
