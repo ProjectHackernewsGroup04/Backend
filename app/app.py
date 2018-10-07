@@ -77,7 +77,7 @@ def api_edit_story():
 def api_all():
     app.logger.info('Getting all items')
     cursor = controller.get_all_items()
-    return dumps(cursor), 200
+    return dumps({'statusCode': 200, 'items': cursor}), 200
 
 
 # Get item by id
