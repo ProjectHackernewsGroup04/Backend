@@ -1,7 +1,6 @@
 import bcrypt
 import database
 import pymongo
-from bson.json_util import loads, dumps, default
 
 # Global variables
 db_con = database.get_db_conn()
