@@ -71,6 +71,7 @@ def delete_item_by_id(id):
     else:
         return False
 
+
 def latest_post():
     posts = db_con.posts
     post = posts.find_one({}, {'_id': False}, sort=[('added', pymongo.DESCENDING)])
