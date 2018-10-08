@@ -3,4 +3,3 @@ pymongo
 bcrypt
 pytest
 flask_httpauth
-flask_restful
