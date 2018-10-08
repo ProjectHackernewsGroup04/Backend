@@ -1,11 +1,14 @@
 from flask import Flask, url_for, request, session, redirect, jsonify
 from flask_httpauth import HTTPBasicAuth
 from bson.json_util import dumps
+from threading import Thread
+import time
 import controller
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = 'hackernews'
 auth = HTTPBasicAuth()
+thread = None
 
 @auth.verify_password
 def verify_password(username, password):
@@ -101,17 +104,36 @@ def api_delete_item_by_id(id):
         return jsonify({'statusCode': 400,
                         'errorMessage': 'Item doesnt exist, not deleted'}), 400
 
+@app.route('/latest', methods=['GET'])
+def latest_digested():
+    # Integration to DB
+    post = controller.latest_post()
+    return jsonify({'statusCode': 200, 'post': post}), 200
+
+@app.route('/status', methods=['GET'])
+def status():
+    status = {'status': 'Alive'}
+    return jsonify(status), 200
 
 @app.errorhandler(404)
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
 
 
+def consume_from_queue():
+    while True:
+        time.sleep(20)
+
 # Run the app on 0.0.0.0:5000
 if __name__ == '__main__':
-    app.config.update(
-        DEBUG=True,
-        CSRF_ENABLED=True,
-    )
-    controller.prepare()
-    app.run(debug=True, host='0.0.0.0')
+    try:
+        app.config.update(
+            DEBUG=True,
+            CSRF_ENABLED=True,
+        )
+        controller.prepare()
+        thread = Thread(target=consume_from_queue)
+        thread.start()
+        app.run(debug=True, host='0.0.0.0')
+    except KeyboardInterrupt:
+        thread.join()
