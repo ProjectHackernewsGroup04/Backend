@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 # Database names
-client = MongoClient('localhost', 27017)
+client = MongoClient('0.0.0.0', 27017)
 db_name = "hackernews"
 collection_name_items = "items"
 collection_name_users = "users"
