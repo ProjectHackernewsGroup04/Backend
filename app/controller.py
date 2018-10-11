@@ -35,7 +35,7 @@ def check_register_success(username, password):
     print('Trying registering', username)
     if existing_user is None:
         hashed = bcrypt.hashpw(password.encode('utf8'),
-                               bcrypt.gensalt())  ## Hashed pw
+                               bcrypt.gensalt())  # Hashed pw
         print(hashed)
         users.insert(
             {'username': username, 'password': hashed})
@@ -48,7 +48,7 @@ def check_register_success(username, password):
 def get_all_items():
     print('Trying getting all items')
     items = db_con.items
-    itemList = items.find()
+    itemList = items.find({'type':'story'})
     return itemList
 
 
@@ -62,10 +62,10 @@ def get_item_by_id(id):
 def delete_item_by_id(id):
     print('Trying delete item by ID')
     items = db_con.items
-    item = items.find_one({"id":id})
+    item = items.find_one({"id": id})
     if item:
         items.update_one({"id": id},
-            {'$set': {'deleted': True}}, upsert=False)
+                         {'$set': {'deleted': True}}, upsert=False)
         return True
     else:
         return False
