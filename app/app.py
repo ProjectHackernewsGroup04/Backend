@@ -2,14 +2,17 @@ from flask import Flask, url_for, request, session, redirect, jsonify
 from flask_httpauth import HTTPBasicAuth
 from bson.json_util import dumps
 import controller
+import helge_controller
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = 'hackernews'
 auth = HTTPBasicAuth()
 
+
 @auth.verify_password
 def verify_password(username, password):
     return controller.check_login_success(username, password)
+
 
 @app.route('/')
 def api_home():
@@ -111,9 +114,10 @@ def api_delete_item_by_id(id):
                         'errorMessage': 'Item doesnt exist, not deleted'}), 400
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return "<h1>404</h1><p>The resource could not be found.</p>", 404
+@app.route('/latest', methods=['GET'])
+def latest_from_post():
+    cursor = helge_controller.get_latest_id()
+    return dumps({'statusCode': 200, 'item': cursor}), 200
 
 
 # Run the app on 0.0.0.0:5000

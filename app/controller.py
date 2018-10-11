@@ -47,6 +47,7 @@ def check_register_success(username, password):
         print('Register Failed')
         return False
 
+
 def add_story(content):
     print('Trying to add story to DB', content['title'])
     story = format_story(content)
@@ -82,6 +83,7 @@ def delete_item_by_id(id):
         return True
     else:
         return False
+
 
 # helper methods
 def format_story(content):
