@@ -1,5 +1,8 @@
 import bcrypt
 import database
+import datetime
+
+from bson.json_util import dumps
 
 # Global variables
 db_con = database.get_db_conn()
@@ -44,11 +47,21 @@ def check_register_success(username, password):
         print('Register Failed')
         return False
 
+def add_story(content):
+    print('Trying to add story to DB', content['title'])
+    story = format_story(content)
+    items = db_con.items
+    if items.insert(story):
+        return True
+    else:
+        print('Can\'t add story')
+        return False
+
 
 def get_all_items():
     print('Trying getting all items')
     items = db_con.items
-    itemList = items.find({'type':'story'})
+    itemList = items.find({'type': 'story'})
     return itemList
 
 
@@ -62,10 +75,23 @@ def get_item_by_id(id):
 def delete_item_by_id(id):
     print('Trying delete item by ID')
     items = db_con.items
-    item = items.find_one({"id": id})
+    item = items.find_one({"id":id})
     if item:
         items.update_one({"id": id},
-                         {'$set': {'deleted': True}}, upsert=False)
+            {'$set': {'deleted': True}}, upsert=False)
         return True
     else:
         return False
+
+# helper methods
+def format_story(content):
+    content['id'] = len(dumps(get_all_items()))
+    content['descendants'] = 7 #just a number, not sure about This
+    content['kids'] = []
+    content['score'] = 123 #just a number, not sure about This
+    content['time'] = datetime.datetime.today()
+    content['type'] = 'story'
+    content['deleted'] = False
+    content['poll'] = 222
+    content['parts'] = []
+return content
