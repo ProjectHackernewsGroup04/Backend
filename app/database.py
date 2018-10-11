@@ -26,4 +26,4 @@ def prepare_db():
         print("Sample data added in database")
 
 
-print("Connection to DB succeeded")
+    print("Connection to DB succeeded")
