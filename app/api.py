@@ -2,7 +2,6 @@ from flask import Flask, url_for, request, session, redirect, jsonify
 from flask_httpauth import HTTPBasicAuth
 from bson.json_util import dumps
 import controller
-import helge_controller
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = 'hackernews'
@@ -108,17 +107,21 @@ def api_delete_item_by_id(id):
     if controller.delete_item_by_id(id):
         return jsonify({'statusCode': 200,
                         'message': 'Item deleted'}), 200
-
     else:
         return jsonify({'statusCode': 400,
                         'errorMessage': 'Item doesnt exist, not deleted'}), 400
 
-
-@app.route('/latest', methods=['GET'])
+# Get latest hanesst_id from posts
+@app.route('/api/post/latest', methods=['GET'])
 def latest_from_post():
-    cursor = helge_controller.get_latest_id()
-    return dumps({'statusCode': 200, 'item': cursor}), 200
+    hanesst_id = helge_controller.get_latest_id()
+    return dumps(hanesst_id), 200
 
+# Get latest id from items
+@app.route('/api/item/latest', methods=['GET'])
+def latest_from_item():
+    latest_id = controller.get_latest_id()
+    return dumps(latest_id), 200
 
 # Run the app on 0.0.0.0:5000
 if __name__ == '__main__':
@@ -126,5 +129,5 @@ if __name__ == '__main__':
         DEBUG=True,
         CSRF_ENABLED=True,
     )
-    controller.prepare()
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0',port=5000)
+    
