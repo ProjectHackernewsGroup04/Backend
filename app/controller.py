@@ -103,3 +103,18 @@ def get_latest_id():
     items = db_con.items
     item = items.find_one(sort=[('_id', pymongo.DESCENDING)])
     return int(item["id"])
+
+# HelgeAPI
+# Getting the latest created object in mongodb using timestamp function in objectid
+def get_latest_post_id():
+    posts = db_con.posts
+    item = posts.find_one(sort=[('_id', pymongo.DESCENDING)])
+    return int(item["hanesst_id"])
+
+# HelgeApi
+# Formatting and inserting the message from rabbit into database
+def add_post(message):
+    posts = db_con.posts
+    data = json.loads(message)
+    posts.insert_one(data)
+    print("object inserted")

@@ -111,17 +111,29 @@ def api_delete_item_by_id(id):
         return jsonify({'statusCode': 400,
                         'errorMessage': 'Item doesnt exist, not deleted'}), 400
 
-# Get latest hanesst_id from posts
-@app.route('/api/post/latest', methods=['GET'])
-def latest_from_post():
-    hanesst_id = helge_controller.get_latest_id()
-    return dumps(hanesst_id), 200
 
 # Get latest id from items
 @app.route('/api/item/latest', methods=['GET'])
 def latest_from_item():
     latest_id = controller.get_latest_id()
     return dumps(latest_id), 200
+
+
+
+# Helge API
+# Get latest hanesst_id from posts
+@app.route('/helge-api/latest', methods=['GET'])
+def latest_from_post():
+    hanesst_id = controller.get_latest_hanesst_id()
+    return dumps(hanesst_id), 200
+
+
+# Helge API
+# Get status
+@app.route('/helge-api/status', methods=['GET'])
+def status():
+    return 200
+
 
 # Run the app on 0.0.0.0:5000
 if __name__ == '__main__':
