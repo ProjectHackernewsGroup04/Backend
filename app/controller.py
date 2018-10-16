@@ -38,7 +38,7 @@ def check_register_success(username, password):
     print('Trying registering', username)
     if existing_user is None:
         hashed = bcrypt.hashpw(password.encode('utf8'),
-                               bcrypt.gensalt())  ## Hashed pw
+                               bcrypt.gensalt())  # Hashed pw
         print(hashed)
         users.insert(
             {'username': username, 'password': hashed})
@@ -52,7 +52,8 @@ def add_story(content):
     story = format_story(content)
     items = db_con.items
     if items.insert(story):
-        return True
+        print('Added', story['id'])
+        return story
     else:
         print('Can\'t add story')
         return False
