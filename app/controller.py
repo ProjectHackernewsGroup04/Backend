@@ -3,6 +3,7 @@ import database
 import datetime
 import pymongo
 from bson.json_util import dumps
+import json
 
 # Global variables
 db_con = database.get_db_conn()
@@ -106,7 +107,7 @@ def get_latest_id():
 
 # HelgeAPI
 # Getting the latest created object in mongodb using timestamp function in objectid
-def get_latest_post_id():
+def get_latest_hanesst_id():
     posts = db_con.posts
     item = posts.find_one(sort=[('_id', pymongo.DESCENDING)])
     return int(item["hanesst_id"])
