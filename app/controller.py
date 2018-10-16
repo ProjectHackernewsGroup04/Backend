@@ -52,7 +52,8 @@ def add_story(content):
     story = format_story(content)
     items = db_con.items
     if items.insert(story):
-        return True
+        print('Added', story['id'])
+        return story
     else:
         print('Can\'t add story')
         return False
@@ -94,4 +95,4 @@ def format_story(content):
     content['deleted'] = False
     content['poll'] = 222
     content['parts'] = []
-return content
+    return content
