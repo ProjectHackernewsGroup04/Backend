@@ -130,21 +130,19 @@ def status():
     return jsonify(status), 200
 
 
-def consume_from_queue():
-    while True:
-        time.sleep(20)
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    post = request.json
+    print(post)
+    return jsonify({"status": "success"}), 200
+    # controller.insert_post(post)
 
 
 # Run the app on 0.0.0.0:5000
 if __name__ == '__main__':
-    try:
-        app.config.update(
-            DEBUG=True,
-            CSRF_ENABLED=True,
-        )
-        controller.prepare()
-        thread = Thread(target=consume_from_queue)
-        thread.start()
-        app.run(debug=True, host='0.0.0.0')
-    except KeyboardInterrupt:
-        thread.join()
+    app.config.update(
+        DEBUG=True,
+        CSRF_ENABLED=True,
+    )
+    controller.prepare()
+    app.run(debug=True, host='0.0.0.0')

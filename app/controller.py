@@ -84,6 +84,14 @@ def delete_item_by_id(id):
     else:
         return False
 
+def insert_post(post):
+    posts = db_con.posts
+    if posts.insert(post):
+        print('Post inserted')
+        return post
+    else:
+        print("Can't add post")
+        return None
 
 def latest_post():
     posts = db_con.posts
