@@ -98,4 +98,4 @@ workflows:
             - build
           filters:
             branches:
-              only: add-api-ednpoints
+              only: add-api-endpoints
