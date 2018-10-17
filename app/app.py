@@ -65,9 +65,19 @@ def api_logout():
 
 # Add story
 @app.route('/api/submit', methods=['POST'])
-@auth.login_required
+# @auth.login_required
 def api_add_story():
-    return {}
+    content = request.json
+    app.logger.info('Adding a story')
+    story = controller.add_story(content)
+    if story:
+        app.logger.info('Story Successfully Added')
+        return dumps({'statusCode': 200,
+                        'story': story}), 200
+    else:
+        app.logger.info('Add Story Failed')
+        return dumps({'statusCode': 400,
+                        'errorMessage': 'Adding Story Failed.'}), 400
 
 
 # Edit story

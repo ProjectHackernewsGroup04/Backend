@@ -1,6 +1,8 @@
 import bcrypt
 import database
 import pymongo
+import datetime
+from bson.json_util import dumps
 
 # Global variables
 db_con = database.get_db_conn()
@@ -36,7 +38,7 @@ def check_register_success(username, password):
     print('Trying registering', username)
     if existing_user is None:
         hashed = bcrypt.hashpw(password.encode('utf8'),
-                               bcrypt.gensalt())  ## Hashed pw
+                               bcrypt.gensalt())  # Hashed pw
         print(hashed)
         users.insert(
             {'username': username, 'password': hashed})
@@ -45,11 +47,22 @@ def check_register_success(username, password):
         print('Register Failed')
         return False
 
+def add_story(content):
+    print('Trying to add story to DB', content['title'])
+    story = format_story(content)
+    items = db_con.items
+    if items.insert(story):
+        print('Added', story['id'])
+        return story
+    else:
+        print('Can\'t add story')
+        return False
+
 
 def get_all_items():
     print('Trying getting all items')
     items = db_con.items
-    itemList = items.find()
+    itemList = items.find({'type': 'story'})
     return itemList
 
 
@@ -77,3 +90,16 @@ def latest_post():
     post = posts.find_one({}, {'_id': False}, sort=[('added', pymongo.DESCENDING)])
     print(post)
     return post
+
+# helper methods
+def format_story(content):
+    content['id'] = len(dumps(get_all_items()))
+    content['descendants'] = 7 #just a number, not sure about This
+    content['kids'] = []
+    content['score'] = 123 #just a number, not sure about This
+    content['time'] = datetime.datetime.today()
+    content['type'] = 'story'
+    content['deleted'] = False
+    content['poll'] = 222
+    content['parts'] = []
+    return content

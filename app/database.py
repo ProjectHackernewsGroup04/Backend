@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import datetime, time
 
 # Database names
-client = MongoClient('db', 27017)
+client = MongoClient('database', 27017)
 db_name = "hackernews"
 collection_name_items = "items"
 collection_name_users = "users"
@@ -30,4 +30,4 @@ def prepare_db():
         print("Sample data added in database")
 
 
-print("Connection to DB succeeded")
+    print("Connection to DB succeeded")
