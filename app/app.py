@@ -1,15 +1,20 @@
 from flask import Flask, url_for, request, session, redirect, jsonify
 from flask_httpauth import HTTPBasicAuth
 from bson.json_util import dumps
+from threading import Thread
+import time
 import controller
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = 'hackernews'
 auth = HTTPBasicAuth()
+thread = None
+
 
 @auth.verify_password
 def verify_password(username, password):
     return controller.check_login_success(username, password)
+
 
 @app.route('/')
 def api_home():
@@ -112,9 +117,25 @@ def api_delete_item_by_id(id):
                         'errorMessage': 'Item doesnt exist, not deleted'}), 400
 
 
-@app.errorhandler(404)
-def page_not_found(e):
-    return "<h1>404</h1><p>The resource could not be found.</p>", 404
+@app.route('/latest', methods=['GET'])
+def latest_digested():
+    # Integration to DB
+    post = controller.latest_post()
+    return jsonify({'statusCode': 200, 'post': post}), 200
+
+
+@app.route('/status', methods=['GET'])
+def status():
+    status = {'status': 'Alive'}
+    return jsonify(status), 200
+
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    post = request.json
+    print(post)
+    return jsonify({"status": "success"}), 200
+    # controller.insert_post(post)
 
 
 # Run the app on 0.0.0.0:5000
