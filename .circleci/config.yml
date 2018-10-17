@@ -70,6 +70,17 @@ jobs:
             docker stop backend 
             docker rm backend 
             docker run --name backend --publish=5000:5000 --network=hnclone-network -d hnclonecphb/backend:$CIRCLE_BRANCH"
+  test-deploy:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: Deploy over SSH
+          command: |
+            ssh $SSH_USER@$SSH_HOST "docker pull hnclonecphb/backend:$CIRCLE_BRANCH
+            docker stop backend 
+            docker rm backend 
+            docker run --name backend --publish=5050:5000 --network=hnclone-network -d hnclonecphb/backend:$CIRCLE_BRANCH"
 
 workflows:
   version: 2
@@ -82,3 +93,9 @@ workflows:
           filters:
             branches:
               only: master
+      - test-deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: add-api-ednpoints
