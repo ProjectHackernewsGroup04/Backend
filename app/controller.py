@@ -84,6 +84,27 @@ def delete_item_by_id(id):
     else:
         return False
 
+def add_comment(content):
+    print('Trying to add comment to DB on ', content['title'])
+    comment = format_comment(content)
+    items = db_con.items
+    if items.insert(comment):
+        print('Added', comment['id'])
+        #update parent
+        story = add_comment_to_parent(parent, comment['id'])
+        return story
+    else:
+        print('Adding a comment failed')
+        return False
+
+def add_comment_to_parent(parent, child):
+    items = db_con.items
+    if items.update_one({"id": parent},
+        {'$push': { "kids": child } })
+        return contruct_story(parent)
+    else:
+        return False
+
 def insert_post(post):
     posts = db_con.posts
     if posts.insert(post):
@@ -104,10 +125,40 @@ def format_story(content):
     content['id'] = len(dumps(get_all_items()))
     content['descendants'] = 7 #just a number, not sure about This
     content['kids'] = []
-    content['score'] = 123 #just a number, not sure about This
+    content['score'] = 3
     content['time'] = datetime.datetime.today()
     content['type'] = 'story'
     content['deleted'] = False
     content['poll'] = 222
     content['parts'] = []
+    content['parent'] = -1
     return content
+
+def format_comment(content):
+    content['id'] = len(dumps(get_all_items()))
+    content['descendants'] = 7 #just a number, not sure about This
+    content['kids'] = []
+    content['score'] = 1
+    content['time'] = datetime.datetime.today()
+    content['type'] = 'comment'
+    content['deleted'] = False
+    content['poll'] = 222
+    content['parts'] = []
+    return content
+
+def construct_story(id):
+    items = db_con.items
+    users = db_con.users
+    story = items.find_one({"id":id})
+    user = users.find_one({"username": story['by']})
+    comments = build_nested_comments(items.find({"parent": story['id']}))
+    story['by'] = user
+    story['kids'] = comments
+    return story
+
+def build_nested_comments(comments):
+    for c in comments:
+        while len(c['kids']) > 0:
+            c['kids'] = items.find({"parent": c['id']})
+            return build_nested_comments(c['kids'])
+    return comments
