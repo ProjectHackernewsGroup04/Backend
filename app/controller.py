@@ -9,7 +9,6 @@ db_con = database.get_db_conn()
 
 def prepare():
     database.prepare_db()
-    print("ASDASD")
 
 
 def check_login_success(username, password):
@@ -162,24 +161,37 @@ def get_user(username):
 
 def get_comments(parent):
     items = db_con.items
-    comments = items.find({"parent": parent})
-    nested = []
-    for i in range(0,comments.count()-1):
-        if len(comments[i]['kids']) > 0:
-            nested = nested.append(get_comments(comments[i]['id']))
-            comments[i]['kids'] = nested
-    return comments
+    comments = list(items.find({"parent": parent}))
+    arr = []
+    for comment in comments:
+        if not comment['kids']: # If no kids
+            arr.append(comment)
+        else: # If have kids going recursive
+            kids = comment['kids'] # Array of kids id
+            comment['kids'] = []
+            for kid in kids:
+                nested_arr = []
+                comment_id = comment['id']
+                nested_list = get_nested_children(nested_arr,comment_id)
+                for item in nested_list:
+                    comment['kids'].append(item)
+            arr.append(comment)
+    return arr
 
-# def build_nested_comments(kids):
-#     for i in range(0, kids.count()):
-#         if len(kids[i]['kids']) > 0:
-#             children = items.find({"parent": kids[i]['id']}) #Find all who's parent is this comment
-#             kids[i]['kids'] = build_nested_comments(children)
-#     print('COMMENTS----->', dumps(kids))
-#     return kids
-
-# def get_user_for_comments(kids):
-#     for i in range(0,kids.count()-1):
-#         kids[i]['by'] = get_user(kids[i]['by'])
-#     print('SHITY', dumps(kids))
-#     return kids
+def get_nested_children(arr,parent):
+    items = db_con.items
+    comments = list(items.find({"parent": parent}))
+    for comment in comments:
+        if not comment['kids']: # If no kids
+            arr.append(comment)
+        else: # If have kids going recursive
+            kids = comment['kids'] # Array of kids id
+            comment['kids'] = []
+            for kid in kids:
+                nested_arr = []
+                comment_id = comment['id']
+                nested_list = get_nested_children(nested_arr,comment_id)
+                for item in nested_list:
+                    comment['kids'].append(item)
+            arr.append(comment)
+    return arr
