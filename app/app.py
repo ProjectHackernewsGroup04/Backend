@@ -117,6 +117,24 @@ def api_delete_item_by_id(id):
                         'errorMessage': 'Item doesnt exist, not deleted'}), 400
 
 
+# Add Comment
+@app.route('/api/comment', methods=['POST'])
+# @auth.login_required
+def api_add_comment():
+    content = request.json
+    app.logger.info('Adding a comment')
+    result = controller.add_comment(content)
+    if result:
+        app.logger.info('Story Successfully Updated with Comment')
+        return dumps({'statusCode': 200,
+                        'story': result}), 200
+    else:
+        app.logger.info('Add Comment Failed')
+        return dumps({'statusCode': 400,
+                        'errorMessage': 'Adding Comment Failed.'}), 400
+
+
+
 @app.route('/latest', methods=['GET'])
 def latest_digested():
     # Integration to DB
