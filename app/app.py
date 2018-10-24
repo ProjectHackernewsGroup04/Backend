@@ -153,8 +153,8 @@ def status():
 def webhook():
     post = request.json
     print(post, file=sys.stderr)
-    return jsonify({"status": "success"}), 200
-    # return jsonify(controller.insert_post(post)), 200
+    # return jsonify({"status": "success"}), 200
+    return jsonify(controller.insert_post(post)), 200
 
 
 # Run the app on 0.0.0.0:5000
