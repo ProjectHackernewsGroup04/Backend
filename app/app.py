@@ -3,6 +3,7 @@ from flask_httpauth import HTTPBasicAuth
 from bson.json_util import dumps
 from threading import Thread
 import time
+import sys
 import controller
 
 app = Flask(__name__)
@@ -151,8 +152,8 @@ def status():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     post = request.json
-    app.logger.info(post)
-    return jsonify({'statusCode': 200}), 200
+    print(post, file=sys.stderr)
+    return jsonify({"status": "success"}), 200
     # return jsonify(controller.insert_post(post)), 200
 
 
