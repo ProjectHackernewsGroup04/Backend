@@ -104,7 +104,6 @@ def add_comment_to_parent(parent, child):
         return False
 
 def insert_post(post):
-    print(post)
     username = post['username']
     password = post['pwd_hash']
     if not check_login_success(username, password):

@@ -151,6 +151,7 @@ def status():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     post = request.json
+    print(post)
     return jsonify(controller.insert_post(post)), 200
 
 
