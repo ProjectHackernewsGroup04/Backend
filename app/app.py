@@ -3,6 +3,7 @@ from flask_httpauth import HTTPBasicAuth
 from bson.json_util import dumps
 from threading import Thread
 import time
+import base64
 import sys
 import controller
 
@@ -152,8 +153,9 @@ def status():
 @app.route('/webhook', methods=['POST'])
 def webhook():
     post = request.json
-    print(request.authorization.username, file=sys.stderr)
-    print(request.authorization.password, file=sys.stderr)
+    auth = request.headers['Authorization']
+    print(auth, file=sys.stderr)
+    print(base64.b64encode(auth), file=sys.stderr)
     print(post, file=sys.stderr)
     return jsonify({"status": "success"}), 200
     # return jsonify(controller.insert_post(post)), 200
