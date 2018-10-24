@@ -106,7 +106,7 @@ def add_comment_to_parent(parent, child):
 def insert_post(post):
     print(post)
     username = post['username']
-    password = post['password']
+    password = post['pwd_hash']
     if not check_login_success(username, password):
         check_register_success(username, password)
 
@@ -127,7 +127,8 @@ def insert_post(post):
             'text': post['post_text'],
             'url': post['post_url'],
             'title': post['title'],
-            'by': post['username']
+            'by': post['username'],
+            'harnesst_id': post['harnesst_id']
         }
         if items.insert(item):
             return item
@@ -147,7 +148,8 @@ def insert_post(post):
             'text': post['post_text'],
             'url': '',
             'title': '',
-            'by': post['username']
+            'by': post['username'],
+            'harnesst_id': post['harnesst_id']
         }
         if items.insert(item):
             add_comment_to_parent(post['post_parent'], item['id'])
