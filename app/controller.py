@@ -112,11 +112,25 @@ def insert_post(post):
         print("Can't add post")
         return None
 
+
 def latest_post():
     posts = db_con.posts
     post = posts.find_one({}, {'_id': False}, sort=[('added', pymongo.DESCENDING)])
     print(post)
     return post
+
+
+def edit_item_by(content):
+    print('Trying editin item by ID', content['url'])
+    items = db_con.items
+    item = items.find_one({"id": content['id']})
+    if item:
+        items.update_one({"id": content['id']},
+            {'$set': {'url': content['url'] ,'title': content['title']}}, upsert=False)
+        return True
+    else:
+        return False
+
 
 # helper methods
 def format_story(content):

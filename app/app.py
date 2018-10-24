@@ -81,10 +81,21 @@ def api_add_story():
 
 
 # Edit story
-@app.route('/api/edit<int:id>', methods=["POST"])
-@auth.login_required
-def api_edit_story():
-    return {}
+@app.route('/api/edit/<int:id>', methods=["PUT"])
+#@auth.login_required
+def api_edit_item_by(id):
+    content = request.json
+    app.logger.info('Getting all items by ID')
+    if controller.edit_item_by(content):
+        return jsonify({'statusCode': 200,
+                        'message': 'Item editet'}), 200
+
+    else:
+        return jsonify({'statusCode': 400,
+                        'errorMessage': 'Item doesnt exist, not editet'}), 400
+
+    
+
 
 
 # Get all stories
