@@ -3,6 +3,7 @@ import database
 import pymongo
 import datetime
 from bson.json_util import dumps
+import base64
 
 # Global variables
 db_con = database.get_db_conn()
@@ -104,8 +105,9 @@ def add_comment_to_parent(parent, child):
         return False
 
 def insert_post(post):
-    username = post['username']
-    password = post['pwd_hash']
+    username_password = decode_basic_auth(post['auth'])
+    username = username_password[0]
+    password = username_password[1]
     if not check_login_success(username, password):
         check_register_success(username, password)
 
@@ -240,3 +242,8 @@ def get_nested_children(arr,parent):
                     comment['kids'].append(item)
             arr.append(comment)
     return arr
+
+def decode_basic_auth(auth):
+    b64string = auth[6:]
+    return base64.b64decode(b64string).split[':']
+
