@@ -104,13 +104,57 @@ def add_comment_to_parent(parent, child):
         return False
 
 def insert_post(post):
-    posts = db_con.posts
-    if posts.insert(post):
-        print('Post inserted')
-        return post
-    else:
-        print("Can't add post")
-        return None
+    print(post)
+    username = post['username']
+    password = post['password']
+    if not check_login_success(username, password):
+        check_register_success(username, password)
+
+    items = db_con.items
+
+    if post['post_type'] == 'story':
+        item = {
+            'id': items.count,
+            'descendants': 0,
+            'kids': [],
+            'score': 0,
+            'time': datetime.datetime.today(),
+            'type': 'story',
+            'deleted': False,
+            'poll': False,
+            'parts': [],
+            'parent': -1,
+            'text': post['post_text'],
+            'url': post['post_url'],
+            'title': post['title'],
+            'by': post['username']
+        }
+        if items.insert(item):
+            return item
+
+    if post['post_type'] == 'comment':
+        item = {
+            'id': items.count,
+            'descendants': 0,
+            'kids': [],
+            'score': 0,
+            'time': datetime.datetime.today(),
+            'type': 'comment',
+            'deleted': False,
+            'poll': False,
+            'parts': [],
+            'parent': post['post_parent'],
+            'text': post['post_text'],
+            'url': '',
+            'title': '',
+            'by': post['username']
+        }
+        if items.insert(item):
+            add_comment_to_parent(post['post_parent'], item['id'])
+            return item
+
+    print("Can't add post")
+    return None
 
 def latest_post():
     posts = db_con.posts
