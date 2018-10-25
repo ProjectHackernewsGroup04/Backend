@@ -117,7 +117,7 @@ def insert_post(post):
 
     if post['post_type'] == 'story':
         item = {
-            'id': post['post_parent'],
+            'id': post['hanesst_id'],
             'descendants': 0,
             'kids': [],
             'score': 0,
@@ -139,7 +139,7 @@ def insert_post(post):
 
     if post['post_type'] == 'comment':
         item = {
-            'id': post['post_parent'],
+            'id': post['hanesst_id'],
             'descendants': 0,
             'kids': [],
             'score': 0,
