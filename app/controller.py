@@ -4,6 +4,7 @@ import pymongo
 import datetime
 from bson.json_util import dumps
 import base64
+import sys
 
 # Global variables
 db_con = database.get_db_conn()
