@@ -5,6 +5,7 @@ import datetime
 from bson.json_util import dumps
 import base64
 import sys
+import uuid
 
 # Global variables
 db_con = database.get_db_conn()
@@ -116,7 +117,7 @@ def insert_post(post):
 
     if post['post_type'] == 'story':
         item = {
-            'id': items.count(),
+            'id': post['post_parent'],
             'descendants': 0,
             'kids': [],
             'score': 0,
@@ -138,7 +139,7 @@ def insert_post(post):
 
     if post['post_type'] == 'comment':
         item = {
-            'id': items.count(),
+            'id': post['post_parent'],
             'descendants': 0,
             'kids': [],
             'score': 0,
@@ -171,7 +172,7 @@ def latest_post():
 # helper methods
 def format_story(content):
     items = db_con.items
-    content['id'] = items.count()
+    content['id'] = uuid.uuid4().hex
     content['descendants'] = 7 #just a number, not sure about This
     content['kids'] = []
     content['score'] = 3
@@ -185,7 +186,7 @@ def format_story(content):
 
 def format_comment(content):
     items = db_con.items
-    content['id'] = items.count()
+    content['id'] = uuid.uuid4().hex
     content['descendants'] = 7 #just a number, not sure about This
     content['kids'] = []
     content['score'] = 1
