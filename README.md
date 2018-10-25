@@ -2,7 +2,7 @@
 
 > Built in [Python](https://www.python.org/) programming language with [Flask](http://flask.pocoo.org/) framework.
 
-backend structure:
+Backend file structure:
 ```
 Backend/
     .circleci/
@@ -10,6 +10,7 @@ Backend/
     app/
         test/
         __init__.py
+        app.py
         controller.py
         database.py
     .gitignore
@@ -32,7 +33,7 @@ closer description on CI in our `Ops` documentation
 #### Structure of `app` package
 Package `app` host the application and runs on http://0.0.0.0:5000.
 
-- ___init__.py_ - in Python, if a sub-directory includes a __init__.py file
+- _init.py_ - in Python, if a sub-directory includes a __init__.py file
  it is considered a package, and can be imported.
 
 - _app.py_ - in this module we structure our application, set routes and
@@ -49,9 +50,18 @@ from flask import Flask
  The @app.route decorator creates an association between the URL given
  as an argument and the function.
 
-- _controller.py_ -
+- _controller.py_ - here lays all the logic for each endpoint/route from the `app.py`.
+Once `app.py` receives data from `Frontend`, it processes data and make
+queries to the database.
 
-- _database.py_ -
+
+- _database.py_ - this module, establishes connection to database.
+```python
+def get_db_conn():
+    connection = client[db_name]
+    return connection
+```
+Prepares collections in "hackernews" database hosted on MongoDB server.
 
 To understand the sequence flow, please see System Sequence Diagram below.
 ![SSD](https://github.com/ProjectHackernewsGroup04/Documentation/blob/master/images/SSD.jpg)
