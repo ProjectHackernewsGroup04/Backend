@@ -133,7 +133,7 @@ def insert_post(post):
             'hanesst_id': post['hanesst_id']
         }
         if items.insert(item):
-            print(item, file=sys.stderr)
+            item.pop('_id', None)
             return item
 
     if post['post_type'] == 'comment':
@@ -156,6 +156,7 @@ def insert_post(post):
         }
         if items.insert(item):
             add_comment_to_parent(post['post_parent'], item['id'])
+            item.pop('_id', None)
             return item
 
     print("Can't add post")
