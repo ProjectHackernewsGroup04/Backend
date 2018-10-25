@@ -201,6 +201,7 @@ def format_comment(content):
 def construct_story(id):
     items = db_con.items
     story = items.find_one({"id":id}, sort=[('kids', pymongo.DESCENDING)])
+    print(story, file=sys.stderr)
     story['by'] = get_user(story['by'])
     story['kids'] = get_comments(story['id'])
     return story
