@@ -1,5 +1,5 @@
 import unittest
-from app.controller import insert_post
+from controller import insert_post
 
 
 class TestController(unittest.TestCase):

@@ -1,5 +1,5 @@
 import bcrypt
-import app.database as database
+import database
 import pymongo
 import datetime
 from bson.json_util import dumps
