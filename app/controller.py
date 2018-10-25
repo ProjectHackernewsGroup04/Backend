@@ -119,7 +119,7 @@ def insert_post(post):
 
     if post['post_type'] == 'story':
         item = {
-            'id': post['hanesst_id'],
+            'id': str(post['hanesst_id']),
             'descendants': 0,
             'kids': [],
             'score': 0,
@@ -141,7 +141,7 @@ def insert_post(post):
 
     if post['post_type'] == 'comment':
         item = {
-            'id': post['hanesst_id'],
+            'id': str(post['hanesst_id']),
             'descendants': 0,
             'kids': [],
             'score': 0,
@@ -150,7 +150,7 @@ def insert_post(post):
             'deleted': False,
             'poll': False,
             'parts': [],
-            'parent': post['post_parent'],
+            'parent': str(post['post_parent']),
             'text': post['post_text'],
             'url': '',
             'title': '',
@@ -158,7 +158,7 @@ def insert_post(post):
             'hanesst_id': post['hanesst_id']
         }
         if items.insert(item):
-            add_comment_to_parent(post['post_parent'], item['id'])
+            add_comment_to_parent(str(post['post_parent']), item['id'])
             item.pop('_id', None)
             return item
 
