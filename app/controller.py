@@ -132,6 +132,7 @@ def insert_post(post):
             'hanesst_id': post['hanesst_id']
         }
         if items.insert(item):
+            print(item, file=sys.stderr)
             return item
 
     if post['post_type'] == 'comment':
