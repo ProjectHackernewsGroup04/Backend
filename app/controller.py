@@ -93,7 +93,10 @@ def add_comment(content):
         print('Added', comment['id'])
         #update parent
         story = add_comment_to_parent(content['parent'], comment['id'])
-        return story
+        if story is not None:
+            return story
+        else:
+            return False
     else:
         print('Adding a comment failed')
         return False
@@ -201,10 +204,12 @@ def format_comment(content):
 def construct_story(id):
     items = db_con.items
     story = items.find_one({"id":id}, sort=[('kids', pymongo.DESCENDING)])
-    print(story, file=sys.stderr)
-    story['by'] = get_user(story['by'])
-    story['kids'] = get_comments(story['id'])
-    return story
+    if story is not None:
+        story['by'] = get_user(story['by'])
+        story['kids'] = get_comments(story['id'])
+        return story
+    else:
+        return None
 
 def get_user(username):
     users = db_con.users
