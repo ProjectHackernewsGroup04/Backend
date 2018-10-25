@@ -87,7 +87,6 @@ def delete_item_by_id(id):
 def add_comment(content):
     items = db_con.items
     print('Trying to add comment to DB on ', content['by'])
-    content['parent'] = int(content['parent'])
     comment = format_comment(content)
     if items.insert(comment):
         print('Added', comment['id'])
