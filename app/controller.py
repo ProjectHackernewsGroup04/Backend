@@ -215,18 +215,18 @@ def get_comments(parent):
     comments = list(items.find({"parent": parent}))
     arr = []
     for comment in comments:
-        if not comment['kids']: # If no kids
-            arr.append(comment)
-        else: # If have kids going recursive
-            kids = comment['kids'] # Array of kids id
-            comment['kids'] = []
-            for kid in kids:
-                nested_arr = []
-                comment_id = comment['id']
-                nested_list = get_nested_children(nested_arr,comment_id)
-                for item in nested_list:
-                    comment['kids'].append(item)
-            arr.append(comment)
+        # if not comment['kids']: # If no kids
+        arr.append(comment)
+        # else: # If have kids going recursive
+        #     kids = comment['kids'] # Array of kids id
+        #     comment['kids'] = []
+        #     for kid in kids:
+        #         nested_arr = []
+        #         comment_id = comment['id']
+        #         nested_list = get_nested_children(nested_arr,comment_id)
+        #         for item in nested_list:
+        #             comment['kids'].append(item)
+        #     arr.append(comment)
     return arr
 
 def get_nested_children(arr,parent):
