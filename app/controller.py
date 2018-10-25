@@ -160,7 +160,7 @@ def insert_post(post):
             return item
 
     print("Can't add post")
-    return None
+    return post
 
 def latest_post():
     items = db_con.items

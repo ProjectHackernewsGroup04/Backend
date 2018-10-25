@@ -12,6 +12,9 @@ class TestController(unittest.TestCase):
         returned = insert_post(obj)
         self.assertIsNotNone(returned)
 
+        obj = {'post_title': '', 'post_text': 'hejwew', 'hanesst_id': 2, 'post_type': 'comment', 'post_parent': 1,
+               'post_url': '', 'auth': "Basic b'cGc6WTg5S0lKM2ZyTQ=='"}
+
 
 if __name__ == '__main__':
     unittest.main()
