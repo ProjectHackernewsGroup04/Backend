@@ -152,7 +152,6 @@ def insert_post(post):
             'text': post['post_text'],
             'url': '',
             'title': '',
-            'by': username,
             'hanesst_id': post['hanesst_id']
         }
         if items.insert(item):
