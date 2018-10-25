@@ -1,5 +1,5 @@
 import bcrypt
-import database
+import app.database as database
 import pymongo
 import datetime
 from bson.json_util import dumps
@@ -115,7 +115,7 @@ def insert_post(post):
 
     if post['post_type'] == 'story':
         item = {
-            'id': items.count,
+            'id': items.count(),
             'descendants': 0,
             'kids': [],
             'score': 0,
@@ -127,16 +127,16 @@ def insert_post(post):
             'parent': -1,
             'text': post['post_text'],
             'url': post['post_url'],
-            'title': post['title'],
-            'by': post['username'],
-            'harnesst_id': post['harnesst_id']
+            'title': post['post_title'],
+            'by': username,
+            'hanesst_id': post['hanesst_id']
         }
         if items.insert(item):
             return item
 
     if post['post_type'] == 'comment':
         item = {
-            'id': items.count,
+            'id': items.count(),
             'descendants': 0,
             'kids': [],
             'score': 0,
@@ -149,8 +149,8 @@ def insert_post(post):
             'text': post['post_text'],
             'url': '',
             'title': '',
-            'by': post['username'],
-            'harnesst_id': post['harnesst_id']
+            'by': username,
+            'hanesst_id': post['hanesst_id']
         }
         if items.insert(item):
             add_comment_to_parent(post['post_parent'], item['id'])
@@ -244,6 +244,8 @@ def get_nested_children(arr,parent):
     return arr
 
 def decode_basic_auth(auth):
-    b64string = auth[6:]
-    return base64.b64decode(b64string).split[':']
+    b64string = auth[8:-1]
+    b = base64.b64decode(b64string)
+    b_string = b.decode('utf-8')
+    return b_string.split(':')
 
