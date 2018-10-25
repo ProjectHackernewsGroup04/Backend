@@ -120,7 +120,7 @@ def insert_post(post):
             'descendants': 0,
             'kids': [],
             'score': 0,
-            'time': datetime.datetime.today(),
+            'time': datetime.datetime.now(),
             'type': 'story',
             'deleted': False,
             'poll': False,
@@ -142,7 +142,7 @@ def insert_post(post):
             'descendants': 0,
             'kids': [],
             'score': 0,
-            'time': datetime.datetime.today(),
+            'time': datetime.datetime.now(),
             'type': 'comment',
             'deleted': False,
             'poll': False,
@@ -163,10 +163,10 @@ def insert_post(post):
     return None
 
 def latest_post():
-    posts = db_con.posts
-    post = posts.find_one({}, {'_id': False}, sort=[('added', pymongo.DESCENDING)])
-    print(post)
-    return post
+    items = db_con.items
+    item = items.find_one({}, {'_id': False}, sort=[('time', pymongo.DESCENDING)])
+    print(item)
+    return item
 
 # helper methods
 def format_story(content):
@@ -175,7 +175,7 @@ def format_story(content):
     content['descendants'] = 7 #just a number, not sure about This
     content['kids'] = []
     content['score'] = 3
-    content['time'] = datetime.datetime.today()
+    content['time'] = datetime.datetime.now()
     content['type'] = 'story'
     content['deleted'] = False
     content['poll'] = 222
@@ -189,7 +189,7 @@ def format_comment(content):
     content['descendants'] = 7 #just a number, not sure about This
     content['kids'] = []
     content['score'] = 1
-    content['time'] = datetime.datetime.today()
+    content['time'] = datetime.datetime.now()
     content['type'] = 'comment'
     content['deleted'] = False
     content['poll'] = 222
