@@ -83,6 +83,18 @@ def delete_item_by_id(id):
     else:
         return False
 
+
+def edit_item_by(content):
+    print('Trying editin item by ID', content['url'])
+    items = db_con.items
+    item = items.find_one({"id": content['id']})
+    if item:
+        items.update_one({"id": content['id']},
+            {'$set': {'url': content['url'] ,'title': content['title']}}, upsert=False)
+        return True
+    else:
+        return False
+
 # helper methods
 def format_story(content):
     content['id'] = len(dumps(get_all_items()))
