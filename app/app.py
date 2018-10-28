@@ -81,8 +81,8 @@ def api_add_story():
                         'errorMessage': 'Adding Story Failed.'}), 400
 
 
+
 # Edit story
-<<<<<<< HEAD
 @app.route('/api/edit/<int:id>', methods=["PUT"])
 #@auth.login_required
 def api_edit_item_by(id):
@@ -97,14 +97,6 @@ def api_edit_item_by(id):
                         'errorMessage': 'Item doesnt exist, not editet'}), 400
 
     
-
-=======
-@app.route('/api/edit<string:id>', methods=["POST"])
-@auth.login_required
-def api_edit_story():
-    return {}
->>>>>>> 0789fc9bdc6a17a92f92d2bb434b9ad9bbc057f8
-
 
 # Get all stories
 @app.route('/api/item/all', methods=['GET'])
