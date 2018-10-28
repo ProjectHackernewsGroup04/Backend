@@ -3,6 +3,7 @@ from flask_httpauth import HTTPBasicAuth
 from bson.json_util import dumps
 from threading import Thread
 import time
+import sys
 import controller
 
 app = Flask(__name__)
@@ -81,6 +82,7 @@ def api_add_story():
 
 
 # Edit story
+<<<<<<< HEAD
 @app.route('/api/edit/<int:id>', methods=["PUT"])
 #@auth.login_required
 def api_edit_item_by(id):
@@ -96,6 +98,12 @@ def api_edit_item_by(id):
 
     
 
+=======
+@app.route('/api/edit<string:id>', methods=["POST"])
+@auth.login_required
+def api_edit_story():
+    return {}
+>>>>>>> 0789fc9bdc6a17a92f92d2bb434b9ad9bbc057f8
 
 
 # Get all stories
@@ -107,7 +115,7 @@ def api_all():
 
 
 # Get item by id
-@app.route('/api/item/<int:id>', methods=['GET'])
+@app.route('/api/item/<string:id>', methods=['GET'])
 def api_get_item_by_id(id):
     app.logger.info('Getting all items by ID')
     cursor = controller.get_item_by_id(id)
@@ -115,7 +123,7 @@ def api_get_item_by_id(id):
 
 
 # Delete item by id
-@app.route('/api/item/<int:id>', methods=['DELETE'])
+@app.route('/api/item/<string:id>', methods=['DELETE'])
 @auth.login_required
 def api_delete_item_by_id(id):
     app.logger.info('Getting all items by ID')

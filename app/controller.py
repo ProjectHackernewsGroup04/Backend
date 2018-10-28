@@ -3,6 +3,9 @@ import database
 import pymongo
 import datetime
 from bson.json_util import dumps
+import base64
+import sys
+import uuid
 
 # Global variables
 db_con = database.get_db_conn()
@@ -84,13 +87,15 @@ def delete_item_by_id(id):
 def add_comment(content):
     items = db_con.items
     print('Trying to add comment to DB on ', content['by'])
-    content['parent'] = int(content['parent'])
     comment = format_comment(content)
     if items.insert(comment):
         print('Added', comment['id'])
         #update parent
         story = add_comment_to_parent(content['parent'], comment['id'])
-        return story
+        if story is not None:
+            return story
+        else:
+            return False
     else:
         print('Adding a comment failed')
         return False
@@ -104,9 +109,9 @@ def add_comment_to_parent(parent, child):
         return False
 
 def insert_post(post):
-    print(post)
-    username = post['username']
-    password = post['pwd_hash']
+    username_password = decode_basic_auth(post['auth'])
+    username = username_password[0]
+    password = username_password[1]
     if not check_login_success(username, password):
         check_register_success(username, password)
 
@@ -114,11 +119,11 @@ def insert_post(post):
 
     if post['post_type'] == 'story':
         item = {
-            'id': items.count,
+            'id': str(post['hanesst_id']),
             'descendants': 0,
             'kids': [],
             'score': 0,
-            'time': datetime.datetime.today(),
+            'time': datetime.datetime.now(),
             'type': 'story',
             'deleted': False,
             'poll': False,
@@ -126,44 +131,46 @@ def insert_post(post):
             'parent': -1,
             'text': post['post_text'],
             'url': post['post_url'],
-            'title': post['title'],
-            'by': post['username'],
-            'harnesst_id': post['harnesst_id']
+            'title': post['post_title'],
+            'by': username,
+            'hanesst_id': post['hanesst_id']
         }
         if items.insert(item):
+            item.pop('_id', None)
             return item
 
     if post['post_type'] == 'comment':
         item = {
-            'id': items.count,
+            'id': str(post['hanesst_id']),
             'descendants': 0,
             'kids': [],
             'score': 0,
-            'time': datetime.datetime.today(),
+            'time': datetime.datetime.now(),
             'type': 'comment',
             'deleted': False,
             'poll': False,
             'parts': [],
-            'parent': post['post_parent'],
+            'parent': str(post['post_parent']),
             'text': post['post_text'],
             'url': '',
             'title': '',
-            'by': post['username'],
-            'harnesst_id': post['harnesst_id']
+            'by': username,
+            'hanesst_id': post['hanesst_id']
         }
         if items.insert(item):
-            add_comment_to_parent(post['post_parent'], item['id'])
+            add_comment_to_parent(str(post['post_parent']), item['id'])
+            item.pop('_id', None)
             return item
 
     print("Can't add post")
-    return None
+    return post
 
 
 def latest_post():
-    posts = db_con.posts
-    post = posts.find_one({}, {'_id': False}, sort=[('added', pymongo.DESCENDING)])
-    print(post)
-    return post
+    items = db_con.items
+    item = items.find_one({}, {'_id': False}, sort=[('time', pymongo.DESCENDING)])
+    print(item)
+    return item
 
 
 def edit_item_by(content):
@@ -181,11 +188,11 @@ def edit_item_by(content):
 # helper methods
 def format_story(content):
     items = db_con.items
-    content['id'] = items.count()
+    content['id'] = uuid.uuid4().hex
     content['descendants'] = 7 #just a number, not sure about This
     content['kids'] = []
     content['score'] = 3
-    content['time'] = datetime.datetime.today()
+    content['time'] = datetime.datetime.now()
     content['type'] = 'story'
     content['deleted'] = False
     content['poll'] = 222
@@ -195,11 +202,11 @@ def format_story(content):
 
 def format_comment(content):
     items = db_con.items
-    content['id'] = items.count()
+    content['id'] = uuid.uuid4().hex
     content['descendants'] = 7 #just a number, not sure about This
     content['kids'] = []
     content['score'] = 1
-    content['time'] = datetime.datetime.today()
+    content['time'] = datetime.datetime.now()
     content['type'] = 'comment'
     content['deleted'] = False
     content['poll'] = 222
@@ -211,9 +218,14 @@ def format_comment(content):
 def construct_story(id):
     items = db_con.items
     story = items.find_one({"id":id}, sort=[('kids', pymongo.DESCENDING)])
-    story['by'] = get_user(story['by'])
-    story['kids'] = get_comments(story['id'])
-    return story
+    print(story, file=sys.stderr)
+    print(id, file=sys.stderr)
+    if story is not None:
+        story['by'] = get_user(story['by'])
+        story['kids'] = get_comments(story['id'])
+        return story
+    else:
+        return None
 
 def get_user(username):
     users = db_con.users
@@ -224,18 +236,18 @@ def get_comments(parent):
     comments = list(items.find({"parent": parent}))
     arr = []
     for comment in comments:
-        if not comment['kids']: # If no kids
-            arr.append(comment)
-        else: # If have kids going recursive
-            kids = comment['kids'] # Array of kids id
-            comment['kids'] = []
-            for kid in kids:
-                nested_arr = []
-                comment_id = comment['id']
-                nested_list = get_nested_children(nested_arr,comment_id)
-                for item in nested_list:
-                    comment['kids'].append(item)
-            arr.append(comment)
+        # if not comment['kids']: # If no kids
+        arr.append(comment)
+        # else: # If have kids going recursive
+        #     kids = comment['kids'] # Array of kids id
+        #     comment['kids'] = []
+        #     for kid in kids:
+        #         nested_arr = []
+        #         comment_id = comment['id']
+        #         nested_list = get_nested_children(nested_arr,comment_id)
+        #         for item in nested_list:
+        #             comment['kids'].append(item)
+        #     arr.append(comment)
     return arr
 
 def get_nested_children(arr,parent):
@@ -255,3 +267,10 @@ def get_nested_children(arr,parent):
                     comment['kids'].append(item)
             arr.append(comment)
     return arr
+
+def decode_basic_auth(auth):
+    b64string = auth[8:-1]
+    b = base64.b64decode(b64string)
+    b_string = b.decode('utf-8')
+    return b_string.split(':')
+
