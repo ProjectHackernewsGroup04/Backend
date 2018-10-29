@@ -83,7 +83,7 @@ def api_add_story():
 
 
 # Edit story
-@app.route('/api/edit/<int:id>', methods=["PUT"])
+@app.route('/api/edit/<string:id>', methods=["PUT"])
 #@auth.login_required
 def api_edit_item_by(id):
     content = request.json
