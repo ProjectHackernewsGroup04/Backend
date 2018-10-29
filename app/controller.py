@@ -2,6 +2,7 @@ import bcrypt
 import database
 import pymongo
 import datetime
+import json
 from bson.json_util import dumps
 import base64
 import sys
@@ -245,7 +246,8 @@ def get_comments(parent):
                 comment_id = comment['id']
                 nested_list = get_nested_children(nested_arr,comment_id)
                 for item in nested_list:
-                    comment['kids'].append(item)
+                    if item not in comment['kids']:
+                        comment['kids'].append(item)
             arr.append(comment)
     return arr
 
@@ -263,7 +265,8 @@ def get_nested_children(arr,parent):
                 comment_id = comment['id']
                 nested_list = get_nested_children(nested_arr,comment_id)
                 for item in nested_list:
-                    comment['kids'].append(item)
+                    if item not in comment['kids']:
+                        comment['kids'].append(item)
             arr.append(comment)
     return arr
 
