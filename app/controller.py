@@ -116,7 +116,6 @@ def insert_post(post):
         check_register_success(username, password)
 
     items = db_con.items
-
     if post['post_type'] == 'story':
         item = {
             'id': str(post['hanesst_id']),
@@ -165,11 +164,25 @@ def insert_post(post):
     print("Can't add post")
     return post
 
+
 def latest_post():
     items = db_con.items
     item = items.find_one({}, {'_id': False}, sort=[('time', pymongo.DESCENDING)])
     print(item)
     return item
+
+
+def edit_item_by(content):
+    print('Trying editin item by ID', content['url'])
+    items = db_con.items
+    item = items.find_one({"id": content['id']})
+    if item:
+        items.update_one({"id": content['id']},
+            {'$set': {'url': content['url'] ,'title': content['title']}}, upsert=False)
+        return True
+    else:
+        return False
+
 
 # helper methods
 def format_story(content):
@@ -222,18 +235,18 @@ def get_comments(parent):
     comments = list(items.find({"parent": parent}))
     arr = []
     for comment in comments:
-        # if not comment['kids']: # If no kids
-        arr.append(comment)
-        # else: # If have kids going recursive
-        #     kids = comment['kids'] # Array of kids id
-        #     comment['kids'] = []
-        #     for kid in kids:
-        #         nested_arr = []
-        #         comment_id = comment['id']
-        #         nested_list = get_nested_children(nested_arr,comment_id)
-        #         for item in nested_list:
-        #             comment['kids'].append(item)
-        #     arr.append(comment)
+        if not comment['kids']: # If no kids
+            arr.append(comment)
+        else: # If have kids going recursive
+            kids = comment['kids'] # Array of kids id
+            comment['kids'] = []
+            for kid in kids:
+                nested_arr = []
+                comment_id = comment['id']
+                nested_list = get_nested_children(nested_arr,comment_id)
+                for item in nested_list:
+                    comment['kids'].append(item)
+            arr.append(comment)
     return arr
 
 def get_nested_children(arr,parent):

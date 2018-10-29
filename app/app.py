@@ -81,12 +81,22 @@ def api_add_story():
                         'errorMessage': 'Adding Story Failed.'}), 400
 
 
-# Edit story
-@app.route('/api/edit<string:id>', methods=["POST"])
-@auth.login_required
-def api_edit_story():
-    return {}
 
+# Edit story
+@app.route('/api/edit/<int:id>', methods=["PUT"])
+#@auth.login_required
+def api_edit_item_by(id):
+    content = request.json
+    app.logger.info('Getting all items by ID')
+    if controller.edit_item_by(content):
+        return jsonify({'statusCode': 200,
+                        'message': 'Item editet'}), 200
+
+    else:
+        return jsonify({'statusCode': 400,
+                        'errorMessage': 'Item doesnt exist, not editet'}), 400
+
+    
 
 # Get all stories
 @app.route('/api/item/all', methods=['GET'])
@@ -151,7 +161,9 @@ def status():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
+    print(request,flush=True)
     post = request.json
+    print(post,flush=True)
     return jsonify(controller.insert_post(post)), 200
 
 
