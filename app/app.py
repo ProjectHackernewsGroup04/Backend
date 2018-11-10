@@ -7,16 +7,25 @@ import sys
 import controller
 
 
-import prometheus_client
-import prom_metrics
+from prometheus_client import start_http_server, Summary, Counter, Gauge, generate_latest, REGISTRY, Histogram
 
-CONTENT_TYPE_LATEST = str('text/plain; version=0.0.4; charset=utf-8')
+# Create a metric to track time spent and requests made.
+REQUEST_TIME = Summary('request_processing_seconds', 'Time spent processing request')
+
+# A counter to count the total number of HTTP requests
+REQUESTS = Counter('http_requests_total', 'Total HTTP Requests (count)', ['method', 'endpoint', 'status_code'])
+
+# A gauge (i.e. goes up and down) to monitor the total number of in progress requests
+IN_PROGRESS = Gauge('http_requests_inprogress', 'Number of in progress HTTP requests')
+
+# A histogram to measure the latency of the HTTP requests
+TIMINGS = Histogram('http_request_duration_seconds', 'HTTP request latency (seconds)')
+
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = 'hackernews'
 auth = HTTPBasicAuth()
 thread = None
-prom_metrics.setup_metrics(app)
 
 
 @auth.verify_password
@@ -73,8 +82,10 @@ def api_logout():
 
 # Add story
 @app.route('/api/submit', methods=['POST'])
-# @auth.login_required
+@IN_PROGRESS.track_inprogress()
+@TIMINGS.time()
 def api_add_story():
+    REQUESTS.labels(method='POST', endpoint="/api/submit", status_code=200).inc()
     content = request.json
     app.logger.info('Adding a story')
     story = controller.add_story(content)
@@ -150,14 +161,6 @@ def api_add_comment():
         return dumps({'statusCode': 400,
                         'errorMessage': 'Adding Comment Failed.'}), 400
 
-@app.errorhandler(500)
-def handle_500(error):
-    return str(error), 500
-
-@app.route('/metrics', methods=['GET'])
-def metrics():
-    return Response(prometheus_client.generate_latest(), mimetype=CONTENT_TYPE_LATEST)
-
 
 @app.route('/latest', methods=['GET'])
 def latest_digested():
@@ -179,6 +182,14 @@ def webhook():
     print(post,flush=True)
     return jsonify(controller.insert_post(post)), 200
 
+@app.errorhandler(500)
+def handle_500(error):
+    return str(error), 500
+
+
+@app.route('/metrics', methods=['GET'])
+def metrics():
+    return generate_latest(REGISTRY)
 
 # Run the app on 0.0.0.0:5000
 if __name__ == '__main__':
