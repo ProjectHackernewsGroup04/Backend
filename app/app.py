@@ -105,6 +105,16 @@ def api_all():
     cursor = controller.get_all_items()
     return dumps({'statusCode': 200, 'items': cursor}), 200
 
+# Get chunked stories FROM row number -> TO row number
+@app.route('/api/item/pagination/', methods=['GET'])
+def api_all_limited():
+    row_from = request.args.get('from')
+    row_to = request.args.get('to')
+    app.logger.info('Getting items from',row_from, 'to',row_to)
+    cursor = controller.get_all_items_limited(row_from,row_to)
+    return dumps({'statusCode': 200, 'items': cursor}), 200
+
+
 
 # Get item by id
 @app.route('/api/item/<string:id>', methods=['GET'])

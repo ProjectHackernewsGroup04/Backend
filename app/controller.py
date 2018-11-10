@@ -67,6 +67,12 @@ def get_all_items():
     itemList = items.find({'type': 'story'}, sort=[('id', pymongo.ASCENDING)])
     return itemList
 
+def get_all_items_limited(row_from,row_to):
+    items = db_con.items
+    print('Trying getting limited items')
+    itemList = items.find({'type': 'story'}, sort=[('id', pymongo.ASCENDING)]).skip(int(row_from)).limit(int(row_to))
+    return itemList
+
 
 def get_item_by_id(id):
     print('Trying getting one item by ID')
