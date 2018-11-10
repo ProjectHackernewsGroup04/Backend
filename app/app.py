@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, session, redirect, jsonify
+from flask import Flask, url_for, request, session, redirect, jsonify, Response
 from flask_httpauth import HTTPBasicAuth
 from bson.json_util import dumps
 from threading import Thread
@@ -6,10 +6,17 @@ import time
 import sys
 import controller
 
+
+import prometheus_client
+import prom_metrics
+
+CONTENT_TYPE_LATEST = str('text/plain; version=0.0.4; charset=utf-8')
+
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = 'hackernews'
 auth = HTTPBasicAuth()
 thread = None
+prom_metrics.setup_metrics(app)
 
 
 @auth.verify_password
@@ -96,7 +103,6 @@ def api_edit_item_by(id):
         return jsonify({'statusCode': 400,
                         'errorMessage': 'Item doesnt exist, not editet'}), 400
 
-    
 
 # Get all stories
 @app.route('/api/item/all', methods=['GET'])
@@ -144,6 +150,13 @@ def api_add_comment():
         return dumps({'statusCode': 400,
                         'errorMessage': 'Adding Comment Failed.'}), 400
 
+@app.errorhandler(500)
+def handle_500(error):
+    return str(error), 500
+
+@app.route('/metrics', methods=['GET'])
+def metrics():
+    return Response(prometheus_client.generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 
 @app.route('/latest', methods=['GET'])
