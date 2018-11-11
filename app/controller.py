@@ -64,13 +64,13 @@ def add_story(content):
 def get_all_items():
     items = db_con.items
     print('Trying getting all items')
-    itemList = items.find({'type': 'story'}, sort=[('id', pymongo.ASCENDING)])
+    itemList = items.find({'type': 'story'}, sort=[('_id', pymongo.DESCENDING)])
     return itemList
 
 def get_all_items_limited(row_from,row_to):
     items = db_con.items
     print('Trying getting limited items')
-    itemList = items.find({'type': 'story'}, sort=[('id', pymongo.ASCENDING)]).skip(int(row_from)).limit(int(row_to))
+    itemList = items.find({'type': 'story'}, sort=[('_id', pymongo.DESCENDING)]).skip(int(row_from)).limit(int(row_to))
     return itemList
 
 
