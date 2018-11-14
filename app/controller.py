@@ -2,6 +2,7 @@ import bcrypt
 import database
 import pymongo
 import datetime
+import json
 from bson.json_util import dumps
 import base64
 import sys
@@ -63,7 +64,13 @@ def add_story(content):
 def get_all_items():
     items = db_con.items
     print('Trying getting all items')
-    itemList = items.find({'type': 'story'}, sort=[('id', pymongo.ASCENDING)])
+    itemList = items.find({'type': 'story'}, sort=[('_id', pymongo.DESCENDING)])
+    return itemList
+
+def get_all_items_limited(row_from,row_to):
+    items = db_con.items
+    print('Trying getting limited items')
+    itemList = items.find({'type': 'story'}, sort=[('_id', pymongo.DESCENDING)]).skip(int(row_from)).limit(int(row_to))
     return itemList
 
 
@@ -164,11 +171,25 @@ def insert_post(post):
     print("Can't add post")
     return post
 
+
 def latest_post():
     items = db_con.items
     item = items.find_one({}, {'_id': False}, sort=[('time', pymongo.DESCENDING)])
     print(item)
     return item
+
+
+def edit_item_by(content):
+    print('Trying editin item by ID', content['url'])
+    items = db_con.items
+    item = items.find_one({"id": content['id']})
+    if item:
+        items.update_one({"id": content['id']},
+            {'$set': {'url': content['url'] ,'title': content['title']}}, upsert=False)
+        return True
+    else:
+        return False
+
 
 # helper methods
 def format_story(content):
@@ -231,7 +252,8 @@ def get_comments(parent):
                 comment_id = comment['id']
                 nested_list = get_nested_children(nested_arr,comment_id)
                 for item in nested_list:
-                    comment['kids'].append(item)
+                    if item not in comment['kids']:
+                        comment['kids'].append(item)
             arr.append(comment)
     return arr
 
@@ -249,7 +271,8 @@ def get_nested_children(arr,parent):
                 comment_id = comment['id']
                 nested_list = get_nested_children(nested_arr,comment_id)
                 for item in nested_list:
-                    comment['kids'].append(item)
+                    if item not in comment['kids']:
+                        comment['kids'].append(item)
             arr.append(comment)
     return arr
 
