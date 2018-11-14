@@ -189,7 +189,7 @@ def update_hanesst(item):
 def latest_post():
     hanesst = db_con.hanesst
 
-    latest = hanesst.find_one({})
+    latest = hanesst.find_one({}, {'_id': False})
 
     if latest:
         return latest
