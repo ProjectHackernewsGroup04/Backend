@@ -123,6 +123,7 @@ def insert_post(post):
         check_register_success(username, password)
 
     items = db_con.items
+
     if post['post_type'] == 'story':
         item = {
             'id': str(post['hanesst_id']),
@@ -143,6 +144,7 @@ def insert_post(post):
         }
         if items.insert(item):
             item.pop('_id', None)
+            update_hanesst(item)
             return item
 
     if post['post_type'] == 'comment':
@@ -166,17 +168,35 @@ def insert_post(post):
         if items.insert(item):
             add_comment_to_parent(str(post['post_parent']), item['id'])
             item.pop('_id', None)
+            update_hanesst(item)
             return item
 
     print("Can't add post")
     return post
 
 
+def update_hanesst(item):
+    hanesst = db_con.hanesst
+
+    latest = hanesst.find_one({})
+    if not latest:
+        hanesst.insert(item)
+    elif latest['hanesst_id'] < item['hanesst_id']:
+        hanesst.update_one({"hanesst_id": latest['hanesst_id']},
+                           {'$set': {'hanesst_id': item['hanesst_id']}}, upsert=False)
+
+
 def latest_post():
-    items = db_con.items
-    item = items.find_one({}, {'_id': False}, sort=[('time', pymongo.DESCENDING)])
-    print(item)
-    return item
+    hanesst = db_con.hanesst
+
+    latest = hanesst.find_one({})
+
+    if latest:
+        return latest
+    else:
+        items = db_con.items
+        item = items.find_one({}, {'_id': False}, sort=[('time', pymongo.DESCENDING)])
+        return item
 
 
 def edit_item_by(content):
