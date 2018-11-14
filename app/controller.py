@@ -179,6 +179,7 @@ def update_hanesst(item):
     hanesst = db_con.hanesst
 
     latest = hanesst.find_one({})
+    print(latest, flush=True)
     if not latest:
         hanesst.insert(item)
     elif latest['hanesst_id'] < item['hanesst_id']:
