@@ -183,7 +183,7 @@ def update_hanesst(item):
         hanesst.insert(item)
     elif latest['hanesst_id'] < item['hanesst_id']:
         hanesst.update_one({"hanesst_id": latest['hanesst_id']},
-                           {'$set': {'hanesst_id': item['hanesst_id'], 'id': item['hanesst_id']}}, upsert=False)
+                           {'$set': {'hanesst_id': item['hanesst_id'], 'id': str(item['hanesst_id'])}}, upsert=False)
 
 
 def latest_post():
