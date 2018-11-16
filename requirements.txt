@@ -6,3 +6,4 @@ flask_httpauth
 pika
 requests
 prometheus_client
+python-logstash-async
