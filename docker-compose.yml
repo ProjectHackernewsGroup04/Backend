@@ -9,10 +9,13 @@ services:
       - "5000:5000"
     networks:
       - hackernews_ops
+      - logging_elk
     volumes:
       - .:/app
 
 networks:
   hackernews_ops:
+    external: true
+  logging_elk:
     external: true
 
