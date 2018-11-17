@@ -5,7 +5,7 @@ from threading import Thread
 import time
 import sys
 import controller
-
+from log import log_handler as log
 
 from prometheus_client import start_http_server, Summary, Counter, Gauge, generate_latest, REGISTRY, Histogram
 
@@ -49,10 +49,12 @@ def api_login():
     app.logger.info('Trying Login')
     if controller.check_login_success(username, password):
         app.logger.info('Login Success')
+        log.log_info("API: Login attemt successed", json.dumps(username)) 
         return jsonify({'statusCode': 200,
                         'message': 'Login Success'}), 200
     else:
         app.logger.info('Login Failed')
+        log.info("API: Login attemt failed",json.dumps(username)) 
         return jsonify({'statusCode': 400, 'errorMessage': 'Bad Login'}), 400
 
 
@@ -65,10 +67,12 @@ def api_register():
     app.logger.info('Trying Registering')
     if controller.check_register_success(username, password):
         app.logger.info('Register Success')
+        log.log_info("API: User registation success",json.dumps(username)) 
         return jsonify({'statusCode': 200,
                         'message': 'User created successed'}), 200
     else:
         app.logger.info('Register failed')
+        log.log_info("API: User registation failed",json.dumps(username)) 
         return jsonify({'statusCode': 400,
                         'errorMessage': 'User already registered'}), 400
 
@@ -87,14 +91,14 @@ def api_logout():
 def api_add_story():
     REQUESTS.labels(method='POST', endpoint="/api/submit", status_code=200).inc()
     content = request.json
-    app.logger.info('Adding a story')
+    app.logger.log_info('Adding a story')
     story = controller.add_story(content)
     if story:
         app.logger.info('Story Successfully Added')
         return dumps({'statusCode': 200,
                         'story': story}), 200
     else:
-        app.logger.info('Add Story Failed')
+        app.logger.log_info('Add Story Failed')
         return dumps({'statusCode': 400,
                         'errorMessage': 'Adding Story Failed.'}), 400
 
@@ -108,11 +112,11 @@ def api_edit_item_by(id):
     app.logger.info('Getting all items by ID')
     if controller.edit_item_by(content):
         return jsonify({'statusCode': 200,
-                        'message': 'Item editet'}), 200
+                        'message': 'Item edited'}), 200
 
     else:
         return jsonify({'statusCode': 400,
-                        'errorMessage': 'Item doesnt exist, not editet'}), 400
+                        'errorMessage': 'Item doesnt exist, not edited'}), 400
 
 
 # Get all stories
@@ -120,6 +124,7 @@ def api_edit_item_by(id):
 def api_all():
     app.logger.info('Getting all items')
     cursor = controller.get_all_items()
+    log.log_info("API: Getting all items") 
     return dumps({'statusCode': 200, 'items': cursor}), 200
 
 # Get chunked stories FROM row number -> TO row number
@@ -145,7 +150,7 @@ def api_get_item_by_id(id):
 @app.route('/api/item/<string:id>', methods=['DELETE'])
 @auth.login_required
 def api_delete_item_by_id(id):
-    app.logger.info('Getting all items by ID')
+    app.logger.info('Delete item by id')
     if controller.delete_item_by_id(id):
         return jsonify({'statusCode': 200,
                         'message': 'Item deleted'}), 200
@@ -164,10 +169,12 @@ def api_add_comment():
     result = controller.add_comment(content)
     if result:
         app.logger.info('Story Successfully Updated with Comment')
+        log.log_info("API: Story Successfully Updated with Comment", json.dumps(content)) 
         return dumps({'statusCode': 200,
                         'story': result}), 200
     else:
         app.logger.info('Add Comment Failed')
+        log.info("API Story Failed Updated with Comment", json.dumps(content)) 
         return dumps({'statusCode': 400,
                         'errorMessage': 'Adding Comment Failed.'}), 400
 
@@ -187,9 +194,9 @@ def status():
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    print(request,flush=True)
+    #print(request,flush=True)
     post = request.json
-    print(post,flush=True)
+    #print(post,flush=True)
     return jsonify(controller.insert_post(post)), 200
 
 @app.errorhandler(500)
