@@ -20,5 +20,8 @@ def log_info_extra(msg,extra):
 
 def log_info(msg):
     test_logger.info(msg)
-    print("ASD",flush=True)
+
+def log_error(msg):
+    test_logger.error(msg)
+
 

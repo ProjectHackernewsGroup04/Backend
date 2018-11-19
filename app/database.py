@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import datetime, time
+from log import log_handler as log
 
 # Database names
 client = MongoClient('database', 27017)
@@ -16,7 +17,11 @@ def get_db_conn():
 
 
 def prepare_db():
-    db_con = get_db_conn()
+    try:
+        db_con = get_db_conn()
+    except Exception as e:
+        log.log_error("DATABASE ERROR",e)
+    
     item_coll = db_con[collection_name_items]
     user_coll = db_con[collection_name_users]
     posts_coll = db_con[collection_name_posts]
