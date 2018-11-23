@@ -49,7 +49,7 @@ def api_login():
     app.logger.info('Trying Login')
     if controller.check_login_success(username, password):
         app.logger.info('Login Success')
-        log.log_info("API: Login attemt successed", json.dumps(username)) 
+        log.log_info("API: Login attemt successed") 
         return jsonify({'statusCode': 200,
                         'message': 'Login Success'}), 200
     else:
@@ -67,12 +67,12 @@ def api_register():
     app.logger.info('Trying Registering')
     if controller.check_register_success(username, password):
         app.logger.info('Register Success')
-        log.log_info("API: User registation success",json.dumps(username)) 
+        log.log_info("API: User registation success") 
         return jsonify({'statusCode': 200,
                         'message': 'User created successed'}), 200
     else:
         app.logger.info('Register failed')
-        log.log_info("API: User registation failed",json.dumps(username)) 
+        log.log_info("API: User registation failed") 
         return jsonify({'statusCode': 400,
                         'errorMessage': 'User already registered'}), 400
 
@@ -169,12 +169,12 @@ def api_add_comment():
     result = controller.add_comment(content)
     if result:
         app.logger.info('Story Successfully Updated with Comment')
-        log.log_info("API: Story Successfully Updated with Comment", json.dumps(content)) 
+        log.log_info("API: Story Successfully Updated with Comment") 
         return dumps({'statusCode': 200,
                         'story': result}), 200
     else:
         app.logger.info('Add Comment Failed')
-        log.log_info("API Story Failed Updated with Comment", json.dumps(content)) 
+        log.log_info("API Story Failed Updated with Comment") 
         return dumps({'statusCode': 400,
                         'errorMessage': 'Adding Comment Failed.'}), 400
 
