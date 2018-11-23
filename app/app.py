@@ -174,7 +174,7 @@ def api_add_comment():
                         'story': result}), 200
     else:
         app.logger.info('Add Comment Failed')
-        log.info("API Story Failed Updated with Comment", json.dumps(content)) 
+        log.log_info("API Story Failed Updated with Comment", json.dumps(content)) 
         return dumps({'statusCode': 400,
                         'errorMessage': 'Adding Comment Failed.'}), 400
 
