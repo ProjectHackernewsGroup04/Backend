@@ -54,7 +54,7 @@ def api_login():
                         'message': 'Login Success'}), 200
     else:
         app.logger.info('Login Failed')
-        log.info("API: Login attemt failed",json.dumps(username)) 
+        log.log_info("API: Login attemt failed") 
         return jsonify({'statusCode': 400, 'errorMessage': 'Bad Login'}), 400
 
 
