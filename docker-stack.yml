@@ -1,0 +1,22 @@
+version: '3.5'
+services:
+  backend:
+    image: hnclonecphb/backend:master
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+      update_config:
+          delay: 30s
+    ports:
+      - "5000:5000"
+    networks:
+      - hackernews_ops
+      - elk
+
+networks:
+  hackernews_ops:
+    external: true
+  elk:
+    external: true
+
