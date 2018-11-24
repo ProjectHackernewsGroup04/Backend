@@ -181,7 +181,7 @@ def api_add_comment():
 
 @app.route('/latest', methods=['GET'])
 def latest_digested():
-    # Integration to DB
+    # Integration to DB hehe
     post = controller.latest_post()
     return jsonify({'statusCode': 200, 'post': post}), 200
 
