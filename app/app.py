@@ -91,14 +91,11 @@ def api_logout():
 def api_add_story():
     REQUESTS.labels(method='POST', endpoint="/api/submit", status_code=200).inc()
     content = request.json
-    app.logger.log_info('Adding a story')
     story = controller.add_story(content)
     if story:
-        app.logger.info('Story Successfully Added')
         return dumps({'statusCode': 200,
                         'story': story}), 200
     else:
-        app.logger.log_info('Add Story Failed')
         return dumps({'statusCode': 400,
                         'errorMessage': 'Adding Story Failed.'}), 400
 
