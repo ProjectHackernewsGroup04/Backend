@@ -2,13 +2,15 @@ import logging
 import sys
 from logstash_async.handler import AsynchronousLogstashHandler
 
-host = 'logstash'
-port = 5005
-
-test_logger = logging.getLogger('logstash')
-test_logger.setLevel(logging.INFO)
-test_logger.addHandler(AsynchronousLogstashHandler(
+try:
+    host = 'logstash'
+    port = 5005
+    test_logger = logging.getLogger('logstash')
+    test_logger.setLevel(logging.INFO)
+    test_logger.addHandler(AsynchronousLogstashHandler(
     host, port, database_path='logstash.db'))
+except:
+	print("except")
 
 # If you don't want to write to a SQLite database, then you do
 # not have to specify a database_path.
@@ -16,12 +18,21 @@ test_logger.addHandler(AsynchronousLogstashHandler(
 # test_logger.addHandler(AsynchronousLogstashHandler(host, port))
 
 def log_info_extra(msg,extra):
-    test_logger.info(msg,extra=extra)
+    try:
+        test_logger.info(msg,extra=extra)
+    except:
+        print("wtf")
 
 def log_info(msg):
-    test_logger.info(msg)
+    try:
+        test_logger.info(msg)
+    except:
+        print("wtf")
 
 def log_error(msg):
-    test_logger.error(msg)
+    try:
+        test_logger.error(msg)
+    except:
+        print("wtf")
 
 
