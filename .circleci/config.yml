@@ -64,8 +64,8 @@ jobs:
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker build -t hnclonecphb/backend:$CIRCLE_BRANCH .
       - run: docker push hnclonecphb/backend:$CIRCLE_BRANCH
-      - run: docker build -t hnclonecphb/backend:$CIRCLE_BUILD_NUM .
-      - run: docker push hnclonecphb/backend:$CIRCLE_BUILD_NUM
+      - run: docker build -t hnclonecphb/backend:$CIRCLE_WORKFLOW_ID .
+      - run: docker push hnclonecphb/backend:$CIRCLE_WORKFLOW_ID
 
       - store_artifacts:
           path: test-reports
@@ -83,7 +83,7 @@ jobs:
             docker rm backend 
             docker run --name backend --publish=5000:5000 --network=hnclone-network -e 'CLOUDAMQP_URL=$CLOUDAMQP_URL' -d hnclonecphb/backend:$CIRCLE_BRANCH
             docker network connect loggin_stack_elk backend
-            echo $CIRCLE_BUILD_NUM"
+            echo $CIRCLE_WORKFLOW_ID"
 
 workflows:
   version: 2
