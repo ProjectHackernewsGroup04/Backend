@@ -78,12 +78,7 @@ jobs:
       - run:
           name: Deploy over SSH
           command: |
-            ssh $SSH_USER@$SSH_HOST "docker pull hnclonecphb/backend:$CIRCLE_BRANCH
-            docker stop backend 
-            docker rm backend 
-            docker run --name backend --publish=5000:5000 --network=hnclone-network -e 'CLOUDAMQP_URL=$CLOUDAMQP_URL' -d hnclonecphb/backend:$CIRCLE_BRANCH
-            docker network connect loggin_stack_elk backend
-            echo $CIRCLE_WORKFLOW_ID"
+            ssh $SSH_USER@$SSH_HOST "docker service update --publish-add=5000:5000 --env-add 'CLOUDAMQP_URL=$CLOUDAMQP_URL' -d  --image hnclonecphb/backend:$CIRCLE_WORKFLOW_ID"
 
 workflows:
   version: 2
